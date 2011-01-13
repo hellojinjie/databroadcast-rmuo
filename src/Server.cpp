@@ -19,7 +19,7 @@ Server::~Server()
 
 void Server::startSimulation()
 {
-    while (true)
+    for (int i = 0; i < 100; i++)
     {
         list<SimpleRequest> requests;
         this->client->generateRequests(requests);

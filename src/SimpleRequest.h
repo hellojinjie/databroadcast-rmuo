@@ -24,6 +24,16 @@ typedef struct TagSimpleRequest
 
     /** 最后一次请求的时刻， -1 表示还没请求过 */
     int lastRequestTime;
+
+    /** 已经收到的数据项 */
+    list<int> receivedItem;
+
+    /** TODO 这个做法不好，但是似乎也想不到其他的补救方法 */
+    bool operator ==(TagSimpleRequest a)
+    {
+        return a.id == id;
+    }
+
 } SimpleRequest;
 
 #endif /* SIMPLEREQUEST_H_ */

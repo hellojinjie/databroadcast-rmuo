@@ -9,6 +9,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <list>
+#include <iostream>
 
 using namespace std;
 
@@ -41,13 +42,18 @@ void MobileClient::generateClients()
 
         /* 请求的数据项个数，服从均匀分布，请求的内容服从 zipf 分布 */
         int readSetCount = uniform(1, 10);
-        for (int j = 0; j < readSetCount; j++)
+        int j = client.readSet.size();
+        while (j < readSetCount)
         {
             client.readSet.push_back(zipf(z));
+            /* 请求的数据项不能重复 */
+            client.readSet.unique();
+            j = client.readSet.size();
         }
 
         this->clients.push_back(client);
     }
+    cout << "一共生成客户端：" << clientCount << endl;
 }
 
 int MobileClient::generateRequests(list<SimpleRequest> requests)
@@ -60,7 +66,6 @@ int MobileClient::generateRequests(list<SimpleRequest> requests)
         if (request.lastRequestTime == -1)
         {
             /* 如果该客户端从没有发送过请求 */
-            /* TODO list.push_back 是按值传递的，不是按引用 */
             requests.push_back(request);
             request.lastRequestTime = 0;
             requestCount++;

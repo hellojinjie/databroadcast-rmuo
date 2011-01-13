@@ -37,6 +37,9 @@ public:
     /** 设置对 Server 的引用  */
     virtual void setServer(Server *server);
 
+    /** 判断该 data 是否在该 request 的read set 中 */
+    virtual bool isInReadSet(SimpleRequest request, int data);
+
 protected:
     /* they should be protected, not private */
     Server *server;

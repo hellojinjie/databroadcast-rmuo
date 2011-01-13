@@ -28,6 +28,19 @@ void Scheduler::addRequests(list<SimpleRequest> requests)
     }
 }
 
+bool Scheduler::isInReadSet(SimpleRequest request, int data)
+{
+    list<int>::iterator iter;
+    for (iter = request.readSet.begin(); iter != request.readSet.end(); iter++)
+    {
+        if (data == *iter)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Scheduler::setServer(Server *server)
 {
     this->server = server;
