@@ -41,7 +41,6 @@ private:
 
     list<SINDataItem> requestItems;
     list<SimpleRequest> scheduleQueue;
-
 };
 
 #endif /* SINSCHEDULER_H_ */

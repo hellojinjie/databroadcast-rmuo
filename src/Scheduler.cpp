@@ -5,6 +5,9 @@
  */
 
 #include "Scheduler.h"
+#include <iostream>
+
+using namespace std;
 
 Scheduler::Scheduler()
 {

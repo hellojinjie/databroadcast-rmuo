@@ -33,7 +33,7 @@ public:
      * 生成一组请求，请求的数量是初始化该实例时已经指定的值
      * 返回生成的请求的数量
      */
-    virtual int generateRequests(list<SimpleRequest> requests);
+    virtual int generateRequests(list<SimpleRequest> &requests);
 
     void setServer(Server *server);
 

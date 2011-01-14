@@ -30,7 +30,7 @@ void run()
     /* sin 调度算法 */
     Server sinServer;
     SINScheduler *sinScheduler = new SINScheduler(&sinServer);
-    MobileClient *sinClient = new MobileClient(&sinServer, 100);
+    MobileClient *sinClient = new MobileClient(&sinServer, 10);
     sinServer.setClient(sinClient);
     sinServer.setScheduler(sinScheduler);
     sinServer.startSimulation();

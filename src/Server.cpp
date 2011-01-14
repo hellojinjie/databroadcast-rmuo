@@ -6,6 +6,9 @@
 
 #include "Server.h"
 #include <list>
+#include <iostream>
+
+using namespace std;
 
 Server::Server()
 {
@@ -19,12 +22,19 @@ Server::~Server()
 
 void Server::startSimulation()
 {
-    for (int i = 0; i < 100; i++)
+    while (true)
     {
         list<SimpleRequest> requests;
         this->client->generateRequests(requests);
         this->scheduler->addRequests(requests);
         this->scheduler->doSchedule();
+
+        cout << "server clock: " << this->getClock() << endl;
+
+        if (this->getClock() >= 30)
+        {
+            break;
+        }
     }
 }
 

@@ -34,9 +34,11 @@ void SINScheduler::doSchedule()
     cout << "开始一次调度" << endl;
 
     /* first, 处理 pendingQueue 里的请求 */
+    cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
     for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
             != pendingQueue.end(); requestIter++)
     {
+        /* 将新加入的请求中的ReadSet 中的data item 加入到 requestItems */
         list<int>::iterator readSetIter;
         for (readSetIter = requestIter->readSet.begin(); readSetIter != requestIter->readSet.end(); readSetIter++)
         {
@@ -64,59 +66,79 @@ void SINScheduler::doSchedule()
                 requestItems.push_back(item);
             }
         }
+        /* 同时将该请求加入调度队列 */
         scheduleQueue.push_back(*requestIter);
     }
     pendingQueue.clear();
+    cout << "scheduleQueue 共有请求个数: " << scheduleQueue.size() << endl;
 
     /* second, 检查是否有request 已经 miss deadline */
     list<SINDataItem>::iterator dataIter;
-    list<SINDataItem> tmp = requestItems;
-    for (dataIter = tmp.begin(); dataIter != tmp.end(); dataIter++)
+    for (dataIter = requestItems.begin(); dataIter != requestItems.end(); )
     {
         /* 加一是因为transmit要一个tick */
-        if (dataIter->deadline > server->getClock() + 1)
+        if (dataIter->requestCount != 0 && dataIter->deadline < server->getClock() + 1)
         {
-            /*
-             * 如果这个 data item miss deadline 了， 就将这个data item 删了，
+            /* 如果这个 data item miss deadline 了， 就将这个data item 删了，
              * 请求了这个data item 的request都miss deadline 了，要处理他们，
              */
-            requestItems.remove(*dataIter);
-            /* 下面检查哪些request错过了截止期，并将他们删了，同时更新 requestItems 中的 requestCount */
-            list<SimpleRequest>::iterator scheduleIter;
-            list<SimpleRequest> scheduleQueueTmp = scheduleQueue;
-            for (scheduleIter = scheduleQueueTmp.begin();
-                    scheduleIter != scheduleQueueTmp.end(); scheduleIter++)
+            for (list<SimpleRequest>::iterator i = scheduleQueue.begin(); i != scheduleQueue.end(); i++)
             {
-                if (this->isInReadSet(*scheduleIter, dataIter->item))
+                cout << "in scheduleQueue: " << i->id << endl;
+            }
+            SINDataItem item = *dataIter;
+            cout << "错过截止期的 item：" << item.item << endl;
+            dataIter = requestItems.erase(dataIter);
+            /* 下面检查哪些request错过了截止期，并将他们删了，同时更新 requestItems 中的 requestCount */
+            list<SimpleRequest>::iterator scheduleIter = scheduleQueue.begin();
+            while (scheduleIter != scheduleQueue.end())
+            {
+                cout << "item:" << item.item << " request: " << scheduleIter->id << " scheduleQueue size: " << scheduleQueue.size() << endl;
+                if (this->isInReadSet(*scheduleIter, item.item))
                 {
                     /* 这个数据项错过了截止期，该request 请求了这个数据项，就说明他也错过截止期了
                      * TODO 这个还应该更新 deadline miss ratio */
-                    cout << "有一个请求错过了截止期：" << scheduleIter->id << endl;
-                    scheduleQueue.remove(*scheduleIter);
                     /* 这个request 还请求了其他数据项，将相应的 requestCount 减一 */
+                    scheduleIter->readSet.remove(item.item);
                     list<int>::iterator otherDataIter;
-                    scheduleIter->readSet.remove(dataIter->item);
                     for (otherDataIter = scheduleIter->readSet.begin();
                             otherDataIter != scheduleIter->readSet.end(); otherDataIter++)
                     {
                         list<SINDataItem>::iterator requestItemsIter;
-                        list<SINDataItem> requestItemsTmp = requestItems;
-                        for (requestItemsIter = requestItemsTmp.begin();
-                                requestItemsIter != requestItemsTmp.end(); requestItemsIter++)
+                        for (requestItemsIter = requestItems.begin();
+                                requestItemsIter != requestItems.end(); requestItemsIter++)
                         {
                             if (requestItemsIter->item == *otherDataIter)
                             {
                                 requestItemsIter->requestCount--;
-                                /* 如果 requestCount 减为 0 了，就要删除它 */
-                                if (requestItemsIter->requestCount == 0)
-                                {
-                                    requestItems.remove(*requestItemsIter);
-                                }
                             }
                         }
                     }
+                    cout << "该请求错过截止期, id:" << scheduleIter->id << endl;
+                    scheduleIter = scheduleQueue.erase(scheduleIter);
+                    cout << "after erase scheduleQueue size:" << scheduleQueue.size() << endl;
+                }
+                else
+                {
+                    scheduleIter++;
                 }
             }
+        }
+        else
+        {
+            dataIter++;
+        }
+    }
+    /* 将requestCount 是0 的清除掉 */
+    for (list<SINDataItem>::iterator iter = requestItems.begin(); iter != requestItems.end(); )
+    {
+        if (iter->requestCount == 0)
+        {
+            iter = requestItems.erase(iter);
+        }
+        else
+        {
+            iter++;
         }
     }
 
@@ -144,24 +166,29 @@ void SINScheduler::doSchedule()
     }
     requestItems.remove(*minimumSINItem);
     /* 当前时间增一，表示这个 sin 值最小的数据项已经广播完成 */
-    server->incrementAndGetClock();
+    unsigned int clock = server->incrementAndGetClock();
+    cout << "broadcast item:" << minimumSINItem->item << " at clock:" << clock << endl;
 
     /* fourth, 调整 scheduleQueue, 看看有没有 request 因为上面的data item 的广播而完成了 */
-    list<SimpleRequest> scheduleQueueTmp = scheduleQueue;
-    list<SimpleRequest>::iterator scheduleQueueTmpIter;
-    for (scheduleQueueTmpIter = scheduleQueueTmp.begin();
-            scheduleQueueTmpIter != scheduleQueueTmp.end(); scheduleQueueTmpIter++)
+    list<SimpleRequest> needToRemove;
+    list<SimpleRequest>::iterator scheduleQueueIter;
+    for (scheduleQueueIter = scheduleQueue.begin();
+            scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
     {
-        if (this->isInReadSet(*scheduleQueueTmpIter, minimumSINItem->item))
+        if (this->isInReadSet(*scheduleQueueIter, minimumSINItem->item))
         {
-            scheduleQueueTmpIter->receivedItem.push_back(minimumSINItem->item);
-            scheduleQueueTmpIter->receivedItem.unique();
-            if (scheduleQueueTmpIter->receivedItem.size() == scheduleQueueTmpIter->readSet.size())
+            scheduleQueueIter->receivedItem.push_back(minimumSINItem->item);
+            scheduleQueueIter->receivedItem.unique();
+            if (scheduleQueueIter->receivedItem.size() == scheduleQueueIter->readSet.size())
             {
                 /* 当前请求已经全部收到数据项, 删除该请求 */
-                scheduleQueue.remove(*scheduleQueueTmpIter);
-                cout << "该请求已经全部收到请求的数据：" << scheduleQueueTmpIter->id << endl;
+                needToRemove.push_back(*scheduleQueueIter);
+                cout << "该请求已经全部收到请求的数据,id：" << scheduleQueueIter->id << endl;
             }
         }
+    }
+    for (list<SimpleRequest>::iterator i = needToRemove.begin(); i != needToRemove.end(); i++)
+    {
+        scheduleQueue.remove(*i);
     }
 }

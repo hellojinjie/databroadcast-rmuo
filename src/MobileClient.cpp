@@ -38,10 +38,10 @@ void MobileClient::generateClients()
         client.lastRequestTime = -1;
 
         /* 请求周期服从均匀分布 */
-        client.period = uniform(1, 10);
+        client.period = uniform(9, 10);
 
         /* 请求的数据项个数，服从均匀分布，请求的内容服从 zipf 分布 */
-        int readSetCount = uniform(1, 10);
+        int readSetCount = uniform(1, 2);
         int j = client.readSet.size();
         while (j < readSetCount)
         {
@@ -50,25 +50,27 @@ void MobileClient::generateClients()
             client.readSet.unique();
             j = client.readSet.size();
         }
-
+        cout << "client id:" << client.id << " period: " << client.period << " read set: ";
+        for (list<int>::iterator iter = client.readSet.begin(); iter != client.readSet.end(); iter++)
+        {
+            cout << *iter << " ";
+        }
+        cout << endl;
         this->clients.push_back(client);
     }
-    cout << "一共生成客户端：" << clientCount << endl;
+    cout << "一共生成客户端：" << clients.size() << endl;
 }
 
-int MobileClient::generateRequests(list<SimpleRequest> requests)
+int MobileClient::generateRequests(list<SimpleRequest> &requests)
 {
-    int requestCount = 0;
     list<SimpleRequest>::iterator iter;
     for (iter = clients.begin(); iter != clients.end(); iter++)
     {
-        SimpleRequest request = *iter;
-        if (request.lastRequestTime == -1)
+        if (iter->lastRequestTime == -1)
         {
             /* 如果该客户端从没有发送过请求 */
-            requests.push_back(request);
-            request.lastRequestTime = 0;
-            requestCount++;
+            requests.push_back(*iter);
+            iter->lastRequestTime = 0;
         }
         else
         {
@@ -78,18 +80,18 @@ int MobileClient::generateRequests(list<SimpleRequest> requests)
              * count = 1 说明客户端可以发请求了
              * count > 1 说明客户端错过了几次发送请求的时机,这count个请求中有 count -1 个已经miss deadline了
              */
-            unsigned int interval = this->server->getClock() - request.lastRequestTime;
-            int count = interval / request.period;
+            unsigned int interval = this->server->getClock() - iter->lastRequestTime;
+            int count = interval / iter->period;
             for (int i = 0; i < count; i++)
             {
-                requests.push_back(request);
-                requestCount++;
+                requests.push_back(*iter);
             }
-            request.lastRequestTime = request.lastRequestTime + count * request.period;
+            iter->lastRequestTime = iter->lastRequestTime + count * iter->period;
         }
     }
 
-    return requestCount;
+    cout << "共生成请求：" << requests.size() << endl;
+    return requests.size();
 }
 
 int MobileClient::generateId()
