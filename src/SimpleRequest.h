@@ -22,8 +22,11 @@ typedef struct TagSimpleRequest
     /** 请求的周期 */
     int period;
 
-    /** 最后一次请求的时刻， -1 表示还没请求过 */
+    /** 客户端最后一次请求的时刻， -1 表示还没请求过 */
     int lastRequestTime;
+
+    /** 该请求到达服务器的时刻 */
+    int arrivalTime;
 
     /** 已经收到的数据项 */
     list<int> receivedItem;

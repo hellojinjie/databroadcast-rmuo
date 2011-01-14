@@ -48,20 +48,20 @@ void Server::setScheduler(Scheduler *scheduler)
     this->scheduler = scheduler;
 }
 
-unsigned int Server::getClock()
+int Server::getClock()
 {
     return this->clock;
 }
 
-unsigned int Server::incrementAndGetClock()
+int Server::incrementAndGetClock()
 {
     this->clock++;
     return this->clock;
 }
 
-unsigned int Server::getAndIncrementClock()
+int Server::getAndIncrementClock()
 {
-    unsigned int tmp = this->clock;
+    int tmp = this->clock;
     this->clock++;
     return tmp;
 }

@@ -24,9 +24,9 @@ public:
 
     void startSimulation();
 
-    unsigned int getClock();
-    unsigned int getAndIncrementClock();
-    unsigned int incrementAndGetClock();
+    int getClock();
+    int getAndIncrementClock();
+    int incrementAndGetClock();
     void setClient(MobileClient *client);
 
 private:
@@ -36,9 +36,9 @@ private:
 
     /**
      * 模拟程序的时间，每调度一个数据项就增一
-     * 假设模拟程序的运行时间不会超过 2^32 tick
+     * 假设模拟程序的运行时间不会超过 2^31 tick
      */
-    unsigned int clock;
+    int clock;
 };
 
 #endif /* SERVER_H_ */

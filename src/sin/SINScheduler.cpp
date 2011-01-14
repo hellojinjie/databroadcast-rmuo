@@ -33,46 +33,7 @@ void SINScheduler::doSchedule()
 {
     cout << "开始一次调度" << endl;
 
-    /* first, 处理 pendingQueue 里的请求 */
-    cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
-    for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
-            != pendingQueue.end(); requestIter++)
-    {
-        /* 将新加入的请求中的ReadSet 中的data item 加入到 requestItems */
-        list<int>::iterator readSetIter;
-        for (readSetIter = requestIter->readSet.begin(); readSetIter != requestIter->readSet.end(); readSetIter++)
-        {
-            list<SINDataItem>::iterator dataIter;
-            bool alreadyExist = false;
-            for (dataIter = requestItems.begin(); dataIter != requestItems.end(); dataIter++)
-            {
-                if (dataIter->item == *readSetIter)
-                {
-                    dataIter->requestCount++;
-                    if (dataIter->deadline > requestIter->period + server->getClock())
-                    {
-                        dataIter->deadline = requestIter->period + server->getClock();
-                    }
-                    alreadyExist = true;
-                    break;
-                }
-            }
-            if (!alreadyExist)
-            {
-                SINDataItem item;
-                item.deadline = requestIter->period + server->getClock();
-                item.item = *readSetIter;
-                item.requestCount = 1;
-                requestItems.push_back(item);
-            }
-        }
-        /* 同时将该请求加入调度队列 */
-        scheduleQueue.push_back(*requestIter);
-    }
-    pendingQueue.clear();
-    cout << "scheduleQueue 共有请求个数: " << scheduleQueue.size() << endl;
-
-    /* second, 检查是否有request 已经 miss deadline */
+    /* first, 检查是否有request 已经 miss deadline */
     list<SINDataItem>::iterator dataIter;
     for (dataIter = requestItems.begin(); dataIter != requestItems.end(); )
     {
@@ -82,10 +43,6 @@ void SINScheduler::doSchedule()
             /* 如果这个 data item miss deadline 了， 就将这个data item 删了，
              * 请求了这个data item 的request都miss deadline 了，要处理他们，
              */
-            for (list<SimpleRequest>::iterator i = scheduleQueue.begin(); i != scheduleQueue.end(); i++)
-            {
-                cout << "in scheduleQueue: " << i->id << endl;
-            }
             SINDataItem item = *dataIter;
             cout << "错过截止期的 item：" << item.item << endl;
             dataIter = requestItems.erase(dataIter);
@@ -93,12 +50,12 @@ void SINScheduler::doSchedule()
             list<SimpleRequest>::iterator scheduleIter = scheduleQueue.begin();
             while (scheduleIter != scheduleQueue.end())
             {
-                cout << "item:" << item.item << " request: " << scheduleIter->id << " scheduleQueue size: " << scheduleQueue.size() << endl;
+                // cout << "item:" << item.item << " request: " << scheduleIter->id << " scheduleQueue size: " << scheduleQueue.size() << endl;
                 if (this->isInReadSet(*scheduleIter, item.item))
                 {
                     /* 这个数据项错过了截止期，该request 请求了这个数据项，就说明他也错过截止期了
-                     * TODO 这个还应该更新 deadline miss ratio */
-                    /* 这个request 还请求了其他数据项，将相应的 requestCount 减一 */
+                     * TODO 这个还应该更新 deadline miss ratio
+                     * 这个request 还请求了其他数据项，将相应的 requestCount 减一 */
                     scheduleIter->readSet.remove(item.item);
                     list<int>::iterator otherDataIter;
                     for (otherDataIter = scheduleIter->readSet.begin();
@@ -142,7 +99,58 @@ void SINScheduler::doSchedule()
         }
     }
 
+    /* second, 处理 pendingQueue 里的请求 */
+    cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
+    for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
+            != pendingQueue.end(); requestIter++)
+    {
+        /* 先判断要加入的这个请求是不是已经错过截止期了 */
+        if (requestIter->arrivalTime + requestIter->period < (int)this->server->getClock())
+        {
+            /* TODO 这里要记录错过截止期的请求 */
+            continue;
+        }
+        /* 将新加入的请求中的ReadSet 中的data item 加入到 requestItems */
+        list<int>::iterator readSetIter;
+        for (readSetIter = requestIter->readSet.begin(); readSetIter != requestIter->readSet.end(); readSetIter++)
+        {
+            list<SINDataItem>::iterator dataIter;
+            bool alreadyExist = false;
+            for (dataIter = requestItems.begin(); dataIter != requestItems.end(); dataIter++)
+            {
+                if (dataIter->item == *readSetIter)
+                {
+                    dataIter->requestCount++;
+                    if (dataIter->deadline > requestIter->period + requestIter->arrivalTime)
+                    {
+                        dataIter->deadline = requestIter->period + requestIter->arrivalTime;
+                    }
+                    alreadyExist = true;
+                    break;
+                }
+            }
+            if (!alreadyExist)
+            {
+                SINDataItem item;
+                item.deadline = requestIter->period + requestIter->arrivalTime;
+                item.item = *readSetIter;
+                item.requestCount = 1;
+                requestItems.push_back(item);
+            }
+        }
+        /* 同时将该请求加入调度队列 */
+        scheduleQueue.push_back(*requestIter);
+    }
+    pendingQueue.clear();
+    cout << "scheduleQueue 共有请求个数: " << scheduleQueue.size() << endl;
+
     /* third,  计算优先级，并选取 sin-1 值最小的那个data item广播*/
+    if (requestItems.size() == 0)
+    {
+        /* 没有数据项要广播, 一个空的时槽 */
+        server->incrementAndGetClock();
+        return;
+    }
     list<SINDataItem>::iterator minimumSINItem = requestItems.begin();
     double minimumSINValue = (double) (minimumSINItem->deadline - server->getClock()) /
             (double) minimumSINItem->requestCount;

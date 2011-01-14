@@ -69,8 +69,9 @@ int MobileClient::generateRequests(list<SimpleRequest> &requests)
         if (iter->lastRequestTime == -1)
         {
             /* 如果该客户端从没有发送过请求 */
-            requests.push_back(*iter);
             iter->lastRequestTime = 0;
+            iter->arrivalTime = 0;
+            requests.push_back(*iter);
         }
         else
         {
@@ -84,6 +85,7 @@ int MobileClient::generateRequests(list<SimpleRequest> &requests)
             int count = interval / iter->period;
             for (int i = 0; i < count; i++)
             {
+                iter->arrivalTime = iter->lastRequestTime + iter->period * i;
                 requests.push_back(*iter);
             }
             iter->lastRequestTime = iter->lastRequestTime + count * iter->period;
