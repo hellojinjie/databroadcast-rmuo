@@ -1,0 +1,273 @@
+下面是 sin 算法的输出，手工验证下是不是对的,,经验证，这是错误的，git id 为  6c247e33
+=========================================
+client id:1 period: 10 read set: 31 10 
+client id:2 period: 9 read set: 270 97 
+client id:3 period: 10 read set: 9 55 
+client id:4 period: 10 read set: 569 80 
+client id:5 period: 9 read set: 4 317 
+client id:6 period: 9 read set: 6 3 
+client id:7 period: 9 read set: 884 
+client id:8 period: 9 read set: 11 
+client id:9 period: 10 read set: 46 3 
+client id:10 period: 10 read set: 74 471 
+一共生成客户端：10
+共生成请求：10
+开始一次调度
+pendingQueue has requests: 10
+scheduleQueue 共有请求个数: 10
+broadcast item:3 at clock:1
+server clock: 1
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:270 at clock:2
+server clock: 2
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:97 at clock:3
+该请求已经全部收到请求的数据,id：2
+server clock: 3
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:4 at clock:4
+server clock: 4
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:317 at clock:5
+该请求已经全部收到请求的数据,id：5
+server clock: 5
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 8
+broadcast item:6 at clock:6
+该请求已经全部收到请求的数据,id：6
+server clock: 6
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 7
+broadcast item:884 at clock:7
+该请求已经全部收到请求的数据,id：7
+server clock: 7
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 6
+broadcast item:11 at clock:8
+该请求已经全部收到请求的数据,id：8
+server clock: 8
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:10 at clock:9
+server clock: 9
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 10
+broadcast item:270 at clock:10
+server clock: 10
+共生成请求：5
+开始一次调度
+错过截止期的 item：31
+该请求错过截止期, id:1
+after erase scheduleQueue size:9
+错过截止期的 item：9
+该请求错过截止期, id:3
+after erase scheduleQueue size:8
+错过截止期的 item：569
+该请求错过截止期, id:4
+after erase scheduleQueue size:7
+错过截止期的 item：46
+该请求错过截止期, id:9
+after erase scheduleQueue size:6
+错过截止期的 item：74
+该请求错过截止期, id:10
+after erase scheduleQueue size:5
+错过截止期的 item：97
+该请求错过截止期, id:2
+after erase scheduleQueue size:4
+错过截止期的 item：4
+该请求错过截止期, id:5
+after erase scheduleQueue size:3
+错过截止期的 item：6
+该请求错过截止期, id:6
+after erase scheduleQueue size:2
+错过截止期的 item：3
+错过截止期的 item：884
+该请求错过截止期, id:7
+after erase scheduleQueue size:1
+错过截止期的 item：11
+该请求错过截止期, id:8
+after erase scheduleQueue size:0
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 5
+broadcast item:10 at clock:11
+server clock: 11
+共生成请求：0
+开始一次调度
+错过截止期的 item：31
+该请求错过截止期, id:1
+after erase scheduleQueue size:4
+错过截止期的 item：9
+该请求错过截止期, id:3
+after erase scheduleQueue size:3
+错过截止期的 item：569
+该请求错过截止期, id:4
+after erase scheduleQueue size:2
+错过截止期的 item：46
+该请求错过截止期, id:9
+after erase scheduleQueue size:1
+错过截止期的 item：74
+该请求错过截止期, id:10
+after erase scheduleQueue size:0
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 12
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 13
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 14
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 15
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 16
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 17
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 18
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 5
+broadcast item:97 at clock:19
+server clock: 19
+共生成请求：0
+开始一次调度
+错过截止期的 item：270
+该请求错过截止期, id:2
+after erase scheduleQueue size:4
+错过截止期的 item：4
+该请求错过截止期, id:5
+after erase scheduleQueue size:3
+错过截止期的 item：6
+该请求错过截止期, id:6
+after erase scheduleQueue size:2
+错过截止期的 item：884
+该请求错过截止期, id:7
+after erase scheduleQueue size:1
+错过截止期的 item：11
+该请求错过截止期, id:8
+after erase scheduleQueue size:0
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 20
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 5
+broadcast item:10 at clock:21
+server clock: 21
+共生成请求：0
+开始一次调度
+错过截止期的 item：31
+该请求错过截止期, id:1
+after erase scheduleQueue size:4
+错过截止期的 item：9
+该请求错过截止期, id:3
+after erase scheduleQueue size:3
+错过截止期的 item：569
+该请求错过截止期, id:4
+after erase scheduleQueue size:2
+错过截止期的 item：46
+该请求错过截止期, id:9
+after erase scheduleQueue size:1
+错过截止期的 item：74
+该请求错过截止期, id:10
+after erase scheduleQueue size:0
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 22
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 23
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 24
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 25
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 26
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 27
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 5
+broadcast item:97 at clock:28
+server clock: 28
+共生成请求：0
+开始一次调度
+错过截止期的 item：270
+该请求错过截止期, id:2
+after erase scheduleQueue size:4
+错过截止期的 item：4
+该请求错过截止期, id:5
+after erase scheduleQueue size:3
+错过截止期的 item：6
+该请求错过截止期, id:6
+after erase scheduleQueue size:2
+错过截止期的 item：884
+该请求错过截止期, id:7
+after erase scheduleQueue size:1
+错过截止期的 item：11
+该请求错过截止期, id:8
+after erase scheduleQueue size:0
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 29
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 0
+server clock: 30
