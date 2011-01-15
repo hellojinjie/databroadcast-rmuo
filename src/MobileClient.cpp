@@ -85,7 +85,7 @@ int MobileClient::generateRequests(list<SimpleRequest> &requests)
             int count = interval / iter->period;
             for (int i = 0; i < count; i++)
             {
-                iter->arrivalTime = iter->lastRequestTime + iter->period * i;
+                iter->arrivalTime = iter->lastRequestTime + iter->period * (i + 1);
                 requests.push_back(*iter);
             }
             iter->lastRequestTime = iter->lastRequestTime + count * iter->period;
