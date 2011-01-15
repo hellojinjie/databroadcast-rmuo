@@ -1,0 +1,232 @@
+正确的 sin 算法 的输出，对应的 tag 为 sin_is_ok
+========================================
+client id:1 period: 10 read set: 92 13 
+client id:2 period: 10 read set: 104 65 
+client id:3 period: 9 read set: 4 28 
+client id:4 period: 10 read set: 36 
+client id:5 period: 9 read set: 11 174 
+client id:6 period: 9 read set: 11 4 
+client id:7 period: 9 read set: 196 
+client id:8 period: 10 read set: 12 
+client id:9 period: 9 read set: 776 
+client id:10 period: 10 read set: 6 
+一共生成客户端：10
+共生成请求：10
+开始一次调度
+pendingQueue has requests: 10
+scheduleQueue 共有请求个数: 10
+broadcast item:4 at clock:1
+server clock: 1
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:11 at clock:2
+该请求已经全部收到请求的数据,id：6
+server clock: 2
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:28 at clock:3
+该请求已经全部收到请求的数据,id：3
+server clock: 3
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 8
+broadcast item:174 at clock:4
+该请求已经全部收到请求的数据,id：5
+server clock: 4
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 7
+broadcast item:196 at clock:5
+该请求已经全部收到请求的数据,id：7
+server clock: 5
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 6
+broadcast item:776 at clock:6
+该请求已经全部收到请求的数据,id：9
+server clock: 6
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:13 at clock:7
+server clock: 7
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:104 at clock:8
+server clock: 8
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:65 at clock:9
+该请求已经全部收到请求的数据,id：2
+server clock: 9
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 9
+broadcast item:36 at clock:10
+该请求已经全部收到请求的数据,id：4
+server clock: 10
+共生成请求：5
+开始一次调度
+错过截止期的 item：92
+该请求错过截止期, id:1
+after erase scheduleQueue size:7
+错过截止期的 item：12
+该请求错过截止期, id:8
+after erase scheduleQueue size:6
+错过截止期的 item：6
+该请求错过截止期, id:10
+after erase scheduleQueue size:5
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 10
+broadcast item:28 at clock:11
+server clock: 11
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:11 at clock:12
+server clock: 12
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:174 at clock:13
+该请求已经全部收到请求的数据,id：5
+server clock: 13
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:196 at clock:14
+该请求已经全部收到请求的数据,id：7
+server clock: 14
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 8
+broadcast item:776 at clock:15
+该请求已经全部收到请求的数据,id：9
+server clock: 15
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 7
+broadcast item:4 at clock:16
+该请求已经全部收到请求的数据,id：3
+该请求已经全部收到请求的数据,id：6
+server clock: 16
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:13 at clock:17
+server clock: 17
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:104 at clock:18
+server clock: 18
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 10
+broadcast item:65 at clock:19
+该请求已经全部收到请求的数据,id：2
+server clock: 19
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:36 at clock:20
+该请求已经全部收到请求的数据,id：4
+server clock: 20
+共生成请求：5
+开始一次调度
+错过截止期的 item：92
+该请求错过截止期, id:1
+after erase scheduleQueue size:7
+错过截止期的 item：12
+该请求错过截止期, id:8
+after erase scheduleQueue size:6
+错过截止期的 item：6
+该请求错过截止期, id:10
+after erase scheduleQueue size:5
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 10
+broadcast item:28 at clock:21
+server clock: 21
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:11 at clock:22
+server clock: 22
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:174 at clock:23
+该请求已经全部收到请求的数据,id：5
+server clock: 23
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:196 at clock:24
+该请求已经全部收到请求的数据,id：7
+server clock: 24
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 8
+broadcast item:776 at clock:25
+该请求已经全部收到请求的数据,id：9
+server clock: 25
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 7
+broadcast item:4 at clock:26
+该请求已经全部收到请求的数据,id：3
+该请求已经全部收到请求的数据,id：6
+server clock: 26
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 5
+broadcast item:13 at clock:27
+server clock: 27
+共生成请求：5
+开始一次调度
+pendingQueue has requests: 5
+scheduleQueue 共有请求个数: 10
+broadcast item:104 at clock:28
+server clock: 28
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 10
+broadcast item:65 at clock:29
+该请求已经全部收到请求的数据,id：2
+server clock: 29
+共生成请求：0
+开始一次调度
+pendingQueue has requests: 0
+scheduleQueue 共有请求个数: 9
+broadcast item:36 at clock:30
+该请求已经全部收到请求的数据,id：4
+server clock: 30
