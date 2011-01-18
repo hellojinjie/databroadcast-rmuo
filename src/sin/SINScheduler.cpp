@@ -28,6 +28,8 @@ SINScheduler::~SINScheduler()
 /**
  * 这个算法的数据结构设计的不好，导致实现的时候很烦
  * STL list 里的元素允许重复，但 remove 时会将所有重复的都删除了
+ * 应该将这个方法分拆成几个小的方法
+ * 在第一步中有检查 deadline ，在第二步也有检查 deadline ，这两步的顺序不能错了
  */
 void SINScheduler::doSchedule()
 {
@@ -148,7 +150,8 @@ void SINScheduler::doSchedule()
     if (requestItems.size() == 0)
     {
         /* 没有数据项要广播, 一个空的时槽 */
-        server->incrementAndGetClock();
+        int time = server->incrementAndGetClock();
+        cout << "当前时刻没有数据项要发送，serverClock:" << time << endl;
         return;
     }
     list<SINDataItem>::iterator minimumSINItem = requestItems.begin();
@@ -170,11 +173,16 @@ void SINScheduler::doSchedule()
             {
                 minimumSINItem = iter;
             }
+            else if (iter->item < minimumSINItem->item)
+            {
+                /* 当 sin 值和 Deadline 都一样的时候就选取 data item值小的那个 */
+                minimumSINItem = iter;
+            }
         }
     }
     requestItems.remove(*minimumSINItem);
     /* 当前时间增一，表示这个 sin 值最小的数据项已经广播完成 */
-    unsigned int clock = server->incrementAndGetClock();
+    int clock = server->incrementAndGetClock();
     cout << "broadcast item:" << minimumSINItem->item << " at clock:" << clock << endl;
 
     /* fourth, 调整 scheduleQueue, 看看有没有 request 因为上面的data item 的广播而完成了 */
