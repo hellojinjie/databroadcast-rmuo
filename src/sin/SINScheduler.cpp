@@ -35,7 +35,9 @@ void SINScheduler::doSchedule()
 {
     cout << "开始一次调度" << endl;
 
-    /* first, 检查是否有request 已经 miss deadline */
+    /* first, 检查是否有request 已经 miss deadline,
+     * XXX 这一步搞复杂了，有空要改下,可以试下对 scheduleQueue 进行遍历，而不是对 requestItems 遍历
+     * 可是这里对 scheduleQueue 遍历和对 requestItems 遍历有什么区别? */
     list<SINDataItem>::iterator dataIter;
     for (dataIter = requestItems.begin(); dataIter != requestItems.end(); )
     {

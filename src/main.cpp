@@ -13,6 +13,7 @@
 #include "Scheduler.h"
 #include "MobileClient.h"
 #include "sin/SINScheduler.h"
+#include "dtiu/DTIUScheduler.h"
 
 using namespace std;
 
@@ -25,21 +26,45 @@ int main()
     run();
 }
 
+void sin()
+{
+    Server sinServer;
+
+    SINScheduler sinScheduler(&sinServer);
+    MobileClient sinClient(&sinServer, 10);
+
+    sinServer.setClient(&sinClient);
+    sinServer.setScheduler(&sinScheduler);
+    sinServer.startSimulation();
+}
+
+void dtiu()
+{
+    Server dtiuServer;
+
+    DTIUScheduler dtiuScheduler(&dtiuServer);
+    MobileClient dtiuClient(&dtiuServer, 10);
+
+    dtiuServer.setClient(&dtiuClient);
+    dtiuServer.setScheduler(&dtiuScheduler);
+    dtiuServer.startSimulation();
+}
+
+void rmuo()
+{
+
+}
+
 void run()
 {
     /* sin 调度算法 */
-    Server sinServer;
-    SINScheduler *sinScheduler = new SINScheduler(&sinServer);
-    MobileClient *sinClient = new MobileClient(&sinServer, 10);
-    sinServer.setClient(sinClient);
-    sinServer.setScheduler(sinScheduler);
-    sinServer.startSimulation();
+    // sin();
 
     /* dtiu 调度算法 */
-
+    dtiu();
 
     /* rmuo 调度算法 */
-
+    // rmuo();
 }
 
 void rand_init()

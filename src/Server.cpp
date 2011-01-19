@@ -29,7 +29,7 @@ void Server::startSimulation()
         this->scheduler->addRequests(requests);
         this->scheduler->doSchedule();
 
-        cout << "server clock: " << this->getClock() << endl;
+        cout << "server clock end: " << this->getClock() << endl;
 
         if (this->getClock() >= 30)
         {
