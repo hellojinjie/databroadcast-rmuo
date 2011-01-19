@@ -69,12 +69,6 @@ int DTIUScheduler::checkDeadline(list<SimpleRequest> &pendingQueue)
 {
     int deadlineMissCount;
 
-
-    for (list<SimpleRequest>::iterator iter = pendingQueue.begin(); iter != pendingQueue.end(); iter++)
-    {
-        cout << "debug " << iter->id << endl;
-    }
-
     list<SimpleRequest>::iterator iter;
     for (iter = pendingQueue.begin(); iter != pendingQueue.end(); )
     {
