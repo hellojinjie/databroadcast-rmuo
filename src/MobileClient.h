@@ -39,15 +39,16 @@ public:
 
     int generateItem();
 
+protected:
+
+    list<SimpleRequest> clients;
+
 private:
 
     void generateClients();
     int generateId();
 
-    /** 管理的客户端的数量   */
     int clientCount;
-
-    list<SimpleRequest> clients;
 
     /** 对服务端的引用  */
     Server *server;

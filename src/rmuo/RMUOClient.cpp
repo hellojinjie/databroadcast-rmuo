@@ -16,7 +16,7 @@ RMUOClient::~RMUOClient()
 {
 }
 
-void RMUOClient::generateRequests(list<SimpleRequest> &requests)
+int RMUOClient::generateRequests(list<SimpleRequest> &requests)
 {
     int count = 0;
     list<SimpleRequest>::iterator iter;
@@ -31,4 +31,5 @@ void RMUOClient::generateRequests(list<SimpleRequest> &requests)
         }
     }
     cout << "共生成请求个数：" << count;
+    return count;
 }

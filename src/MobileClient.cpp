@@ -41,7 +41,7 @@ void MobileClient::generateClients()
         client.period = uniform(9, 10);
 
         /* 请求的数据项个数，服从均匀分布，请求的内容服从 zipf 分布 */
-        int readSetCount = uniform(1, 2);
+        int readSetCount = uniform(6, 9);
         int j = client.readSet.size();
         while (j < readSetCount)
         {

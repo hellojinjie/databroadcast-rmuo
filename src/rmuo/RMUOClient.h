@@ -10,6 +10,7 @@
 #include "../MobileClient.h"
 #include "../SimpleRequest.h"
 #include <list>
+#include <iostream>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ public:
     virtual ~RMUOClient();
 
     /** 所有的请求都只发一遍就可以了  */
-    virtual void generateRequests(list<SimpleRequest> &requests);
+    virtual int generateRequests(list<SimpleRequest> &requests);
 private:
 
 };
