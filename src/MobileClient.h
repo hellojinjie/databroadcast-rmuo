@@ -35,7 +35,9 @@ public:
      */
     virtual int generateRequests(list<SimpleRequest> &requests);
 
-    void setServer(Server *server);
+    virtual void setServer(Server *server);
+
+    int generateItem();
 
 private:
 
@@ -51,7 +53,8 @@ private:
     Server *server;
 
     /** 客户端编号 */
-    int id;
+    int initId;
+
     zipf_t z;
 };
 

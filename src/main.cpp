@@ -14,6 +14,8 @@
 #include "MobileClient.h"
 #include "sin/SINScheduler.h"
 #include "dtiu/DTIUScheduler.h"
+#include "rmuo/RMUOClient.h"
+#include "rmuo/RMUOScheduler.h"
 
 using namespace std;
 
@@ -52,7 +54,14 @@ void dtiu()
 
 void rmuo()
 {
+    Server rmuoServer;
 
+    RMUOScheduler rmuoScheduler(&rmuoServer);
+    RMUOClient rmuoClient(&rmuoServer, 10);
+
+    rmuoServer.setClient(&rmuoClient);
+    rmuoServer.setScheduler(&rmuoScheduler);
+    rmuoServer.startSimulation();
 }
 
 void run()

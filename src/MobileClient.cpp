@@ -15,7 +15,7 @@ using namespace std;
 
 MobileClient::MobileClient(Server *server, int count)
 {
-    this->id = 0;
+    this->initId = 0;
     zipf_init(1000, 1.0, &this->z);
     this->setServer(server);
     this->clientCount = count;
@@ -45,7 +45,7 @@ void MobileClient::generateClients()
         int j = client.readSet.size();
         while (j < readSetCount)
         {
-            client.readSet.push_back(zipf(z));
+            client.readSet.push_back(this->generateItem());
             /* 请求的数据项不能重复 */
             client.readSet.unique();
             j = client.readSet.size();
@@ -96,10 +96,15 @@ int MobileClient::generateRequests(list<SimpleRequest> &requests)
     return requests.size();
 }
 
+int MobileClient::generateItem()
+{
+    return zipf(z);
+}
+
 int MobileClient::generateId()
 {
-    id++;
-    return id;
+    initId++;
+    return initId;
 }
 
 void MobileClient::setServer(Server *server)
