@@ -27,7 +27,7 @@ void DTIUScheduler::doSchedule()
     /* second, 对 pendingQueue 进行预处理 */
     preprocess();
 
-    if (scheduleQueue.size() != 0)
+    if (scheduleQueue.size() > 0)
     {
         /* third, 根据算法选择一个 request进行广播 */
         SimpleRequest request = broadcast();
@@ -51,6 +51,7 @@ int DTIUScheduler::checkDeadline()
     {
         if (iter->arrivalTime + iter->period < server->getClock() + (int)(iter->readSet.size()))
         {
+            cout << "该请求错过截止期：" << iter->id << endl;
             iter = scheduleQueue.erase(iter);
             deadlineMissCount++;
         }
@@ -68,13 +69,19 @@ int DTIUScheduler::checkDeadline(list<SimpleRequest> &pendingQueue)
 {
     int deadlineMissCount;
 
+
+    for (list<SimpleRequest>::iterator iter = pendingQueue.begin(); iter != pendingQueue.end(); iter++)
+    {
+        cout << "debug " << iter->id << endl;
+    }
+
     list<SimpleRequest>::iterator iter;
     for (iter = pendingQueue.begin(); iter != pendingQueue.end(); )
     {
         if (iter->arrivalTime + iter->period < server->getClock() + (int)(iter->readSet.size()))
         {
-            iter = scheduleQueue.erase(iter);
-            cout << "该请求错过截止期：" << iter->id << endl;
+            cout << "该请求错过截止期(pendingQueue)：" << iter->id << endl;
+            iter = pendingQueue.erase(iter);
             deadlineMissCount++;
         }
         else
