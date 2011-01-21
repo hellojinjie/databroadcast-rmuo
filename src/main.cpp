@@ -67,13 +67,13 @@ void rmuo()
 void run()
 {
     /* sin 调度算法 */
-    // sin();
+    //sin();
 
     /* dtiu 调度算法 */
-    dtiu();
+    //dtiu();
 
     /* rmuo 调度算法 */
-    // rmuo();
+    rmuo();
 }
 
 void rand_init()

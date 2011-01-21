@@ -103,7 +103,7 @@ void SINScheduler::doSchedule()
         }
     }
 
-    /* second, 处理 pendingQueue 里的请求 */
+    /* second, 处理 pendingQueue 里的请求,将请求加入到 scheduleQueue */
     cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
     for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
             != pendingQueue.end(); requestIter++)
