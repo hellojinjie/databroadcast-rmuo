@@ -10,6 +10,7 @@
 #include "../Scheduler.h"
 #include "RMUORequest.h"
 #include <list>
+#include <map>
 
 using namespace std;
 
@@ -26,8 +27,9 @@ private:
     /** 已经按 period 从小到大排序的队列，如果 period 相等，按 request id 排序 */
     list<RMUORequest> scheduleQueue;
 
-    /** 已排序的，并且已经将 period 转化成 harmonicPeriod */
-    list<RMUORequest> harmonicQueue;
+    /** 已排序的，并且已经将 period 转化成 harmonicPeriod,
+     * 优先级（也就是周期）相同的放在一个list里， key 就是对应的优先级 */
+    map<int, list<RMUORequest>> harmonicQueue;
 
     /** 将 pendingQueue 中的 SimpleRequest 转化成 RMUORequest 加入 scheduleQueue */
     void preprocess();
@@ -41,6 +43,7 @@ private:
     /** 将 scheduleQueue 中请求的period 转化成 harmonicPeriod，并加入 harmonicQueue */
     void transformToHarmonic();
 
+    /** 这个函数是在给request 排序的时候用的  */
     bool static requestComparison(RMUORequest r1, RMUORequest r2);
 
     bool isInList(list<int> l, int i);
