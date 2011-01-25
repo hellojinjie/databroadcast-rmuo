@@ -25,7 +25,21 @@ RMUOScheduler::~RMUOScheduler()
 
 void RMUOScheduler::doSchedule()
 {
+    preprocess();
 
+    if (scheduleQueue.size() != 0)
+    {
+        verifySchedulability();
+
+        transformToHarmonic();
+
+        broadcast();
+    }
+    else
+    {
+        this->server->incrementAndGetClock();
+        cout << "请求队列里没有数据，一个空的时槽" << endl;
+    }
 }
 
 void RMUOScheduler::broadcast()
@@ -33,6 +47,10 @@ void RMUOScheduler::broadcast()
 
 }
 
+void RMUOScheduler::checkDeadline()
+{
+
+}
 
 bool RMUOScheduler::verifySchedulability()
 {
@@ -57,7 +75,6 @@ bool RMUOScheduler::verifySchedulability()
         return false;
     }
 }
-
 
 
 void RMUOScheduler::preprocess()
@@ -122,13 +139,10 @@ void RMUOScheduler::transformToHarmonic()
             A_j_min = A_j;
             l_star = l_j;
         }
-        else
+        else if (A_j < A_j_min)
         {
-            if (A_j < A_j_min)
-            {
-                A_j_min = A_j;
-                l_star = l_j;
-            }
+            A_j_min = A_j;
+            l_star = l_j;
         }
     }
 
@@ -142,8 +156,15 @@ void RMUOScheduler::transformToHarmonic()
 
     /* third, 对上面计算的周期进行向上取整, 这个 for 循环本应该和上面的那个写在一起 */
     list<RMUORequest>::iterator iter2;
-    int priority = -1;
+    int priority = 0;
     double priorHarmonicPeriod = 0;
+    bool needCeil = false;
+    double basePeriod = scheduleQueue.front().harmonicPeriod;
+    if (basePeriod != (int)basePeriod)
+    {
+        basePeriod = ceil(basePeriod);
+        needCeil = true;
+    }
     for (iter2 = scheduleQueue.begin(); iter2 != scheduleQueue.end(); iter2++)
     {
         if (iter2->harmonicPeriod != priorHarmonicPeriod)
@@ -154,9 +175,12 @@ void RMUOScheduler::transformToHarmonic()
             pair<int, list<RMUORequest> > p(priority, l);
             harmonicQueue.insert(p);
         }
+        if (needCeil)
+        {
+            iter2->harmonicPeriod = basePeriod * priority;
+        }
         harmonicQueue[priority].push_back(*iter2);
     }
-
 }
 
 bool RMUOScheduler::requestComparison(RMUORequest r1, RMUORequest r2)

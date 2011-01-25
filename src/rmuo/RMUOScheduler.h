@@ -37,6 +37,9 @@ private:
     /** 在一个 hyperPeriod 内广播数据项 */
     void broadcast();
 
+    /* 每发送一个数据项就对每个请求检查是否已经错过了截止期了，如果有错过的，就说明程序错了，或算法错了。 */
+    void checkDeadline();
+
     /** 检查 scheduleQueue，验证其是否可调度 */
     bool verifySchedulability();
 
