@@ -30,6 +30,9 @@ int RMUOClient::generateRequests(list<SimpleRequest> &requests)
             requests.push_back(*iter);
         }
     }
-    cout << "共生成请求个数：" << count << endl;
+    if (count > 0)
+    {
+        cout << "共生成请求个数：" << count << endl;
+    }
     return count;
 }

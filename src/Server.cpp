@@ -70,9 +70,3 @@ void Server::setClient(MobileClient *client)
 {
     this->client = client;
 }
-
-
-
-
-
-

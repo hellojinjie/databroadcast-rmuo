@@ -6,6 +6,9 @@
 
 #include "RMUOScheduler.h"
 #include <cmath>
+#include <iostream>
+
+using namespace std;
 
 
 RMUOScheduler::RMUOScheduler()
@@ -29,7 +32,11 @@ void RMUOScheduler::doSchedule()
 
     if (scheduleQueue.size() != 0)
     {
-        verifySchedulability();
+        if (!verifySchedulability())
+        {
+            cout << "该请求队列不可调度，退出程序" << endl;
+            return;
+        }
 
         transformToHarmonic();
 
@@ -44,7 +51,60 @@ void RMUOScheduler::doSchedule()
 
 void RMUOScheduler::broadcast()
 {
+    int priorityLevels = harmonicQueue.size(); /* 共有多少个优先级 */
+    int hyperperiod = harmonicQueue[priorityLevels].front().harmonicPeriod;
+    int minPeriod = harmonicQueue[1].front().harmonicPeriod;
 
+    /* first, 为每一个优先级生成UnserveredSet */
+    map<int, list<int> > unserveredSet;
+    map<int, list<RMUORequest> >::iterator iter;
+    for (iter = harmonicQueue.begin(); iter != harmonicQueue.end(); iter++)
+    {
+        list<int> unservered;
+        for(list<RMUORequest>::iterator innerIter = iter->second.begin();
+                innerIter != iter->second.end(); innerIter++)
+        {
+            unservered.insert(unservered.end(), innerIter->uniqueSet.begin(), innerIter->uniqueSet.end());
+        }
+        pair<int, list<int> > data(iter->first, unservered);
+        unserveredSet.insert(data);
+    }
+
+    /* second, 按优先级广播数据 */
+    /* 先定义一个临时用的 map */
+    map<int, list<int> > workingSet = unserveredSet;
+    for (int clock = 0; clock < hyperperiod; clock++)
+    {
+        /* 先装填数据 */
+        for (int i = 1; i <= priorityLevels; i++)
+        {
+            /* 在该优先级的新一个广播周期到来的时候，初始化该优先级的未广播数据，
+             * 该算法已经确保在上个周期中，数据都已经广播出去，没有错过截止期的 */
+            if (clock % (i * minPeriod) == 0)
+            {
+                workingSet[i] = unserveredSet[i];
+            }
+        }
+
+        /* 然后挑优先级高的一个数据广播 */
+        for (int i = 1; i <= priorityLevels; i++)
+        {
+            if (workingSet[i].size() == 0)
+            {
+                continue;
+            }
+            else
+            {
+                int item = workingSet[i].front();
+                workingSet[i].pop_front();
+                int serverClock = this->server->incrementAndGetClock();
+                cout << "broadcast item:" << item << " at clock:" << serverClock << endl;
+                /* 检查其余的请求有没有错过截止期,这个应该针对每个数据项检查，还是每个请求检查 */
+                checkDeadline();
+                break;
+            }
+        }
+    }
 }
 
 void RMUOScheduler::checkDeadline()
@@ -79,6 +139,11 @@ bool RMUOScheduler::verifySchedulability()
 
 void RMUOScheduler::preprocess()
 {
+    if (pendingQueue.size() == 0)
+    {
+        return;
+    }
+
     /* first, 将 pendingQueue 里的请求加入 scheduleQueue */
     list<SimpleRequest>::iterator simpleIter;
     for (simpleIter = pendingQueue.begin(); simpleIter != pendingQueue.end(); simpleIter++)
@@ -98,6 +163,7 @@ void RMUOScheduler::preprocess()
     list<RMUORequest>::iterator rmuoIter;
     for (rmuoIter = scheduleQueue.begin(); rmuoIter != scheduleQueue.end(); rmuoIter++)
     {
+        rmuoIter->uniqueSet.clear();
         list<int>::iterator iter;
         for (iter = rmuoIter->readSet.begin(); iter != rmuoIter->readSet.end(); iter++)
         {
@@ -107,6 +173,17 @@ void RMUOScheduler::preprocess()
                 rmuoIter->uniqueSet.push_back(*iter);
             }
         }
+    }
+    /* for debug */
+    for (rmuoIter = scheduleQueue.begin(); rmuoIter != scheduleQueue.end(); rmuoIter++)
+    {
+        cout << "in request:" << rmuoIter->id << " uniqueSet: ";
+        list<int>::iterator iter;
+        for (iter = rmuoIter->uniqueSet.begin(); iter != rmuoIter->uniqueSet.end(); iter++)
+        {
+            cout << *iter << " ";
+        }
+        cout << endl;
     }
 }
 
@@ -174,13 +251,16 @@ void RMUOScheduler::transformToHarmonic()
             list<RMUORequest> l;
             pair<int, list<RMUORequest> > p(priority, l);
             harmonicQueue.insert(p);
+            cout << endl << "priority: " << priority << " period: " << iter2->harmonicPeriod << " has requests: ";
         }
         if (needCeil)
         {
             iter2->harmonicPeriod = basePeriod * priority;
         }
         harmonicQueue[priority].push_back(*iter2);
+        cout << iter2->id << " ";
     }
+    cout << endl;
 }
 
 bool RMUOScheduler::requestComparison(RMUORequest r1, RMUORequest r2)

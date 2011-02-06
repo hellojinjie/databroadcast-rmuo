@@ -38,10 +38,10 @@ void MobileClient::generateClients()
         client.lastRequestTime = -1;
 
         /* 请求周期服从均匀分布 */
-        client.period = uniform(9, 10);
+        client.period = uniform(11, 23);
 
         /* 请求的数据项个数，服从均匀分布，请求的内容服从 zipf 分布 */
-        int readSetCount = uniform(6, 9);
+        int readSetCount = uniform(1, 2);
         int j = client.readSet.size();
         while (j < readSetCount)
         {

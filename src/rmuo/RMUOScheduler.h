@@ -28,8 +28,9 @@ private:
     list<RMUORequest> scheduleQueue;
 
     /** 已排序的，并且已经将 period 转化成 harmonicPeriod,
-     * 优先级（也就是周期）相同的放在一个list里， key 就是对应的优先级 */
-    map<int, list<RMUORequest>> harmonicQueue;
+     * 优先级（也就是周期）相同的放在一个list里， key 就是对应的优先级
+     * key 是从 1 开始的 */
+    map<int, list<RMUORequest> > harmonicQueue;
 
     /** 将 pendingQueue 中的 SimpleRequest 转化成 RMUORequest 加入 scheduleQueue */
     void preprocess();

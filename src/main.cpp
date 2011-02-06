@@ -16,6 +16,7 @@
 #include "dtiu/DTIUScheduler.h"
 #include "rmuo/RMUOClient.h"
 #include "rmuo/RMUOScheduler.h"
+#include "Configure.h"
 
 using namespace std;
 
@@ -73,7 +74,8 @@ void run()
     //dtiu();
 
     /* rmuo 调度算法 */
-    rmuo();
+    //rmuo();
+    Configure config("simulation.conf.js");
 }
 
 void rand_init()
