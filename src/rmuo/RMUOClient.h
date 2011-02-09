@@ -17,7 +17,7 @@ using namespace std;
 class RMUOClient: public MobileClient
 {
 public:
-    RMUOClient(Server *server, int count);
+    RMUOClient(Server *server, int count, ConfigureItem configure);
     virtual ~RMUOClient();
 
     /** 所有的请求都只发一遍就可以了  */

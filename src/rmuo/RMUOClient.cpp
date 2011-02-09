@@ -6,8 +6,8 @@
 
 #include "RMUOClient.h"
 
-RMUOClient::RMUOClient(Server *server, int clientCount)
-        : MobileClient(server, clientCount)
+RMUOClient::RMUOClient(Server *server, int clientCount, ConfigureItem configure)
+        : MobileClient(server, clientCount, configure)
 {
 
 }

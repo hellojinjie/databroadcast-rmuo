@@ -10,6 +10,7 @@
 #include "util.h"
 #include "Server.h"
 #include "SimpleRequest.h"
+#include "Configure.h"
 #include <list>
 
 /* 名称空间不可忘了啊 */
@@ -26,7 +27,7 @@ class MobileClient
 public:
 
     /** 初始化一个包含 count 个 Client 的MobileClient */
-    MobileClient(Server *server, int count);
+    MobileClient(Server *server, int count, ConfigureItem configure);
     virtual ~MobileClient();
 
     /**
@@ -47,6 +48,8 @@ private:
 
     void generateClients();
     int generateId();
+
+    ConfigureItem configure;
 
     int clientCount;
 

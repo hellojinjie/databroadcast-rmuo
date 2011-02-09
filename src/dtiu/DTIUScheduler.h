@@ -15,7 +15,7 @@ using namespace std;
 class DTIUScheduler: public Scheduler
 {
 public:
-    DTIUScheduler(Server *server);
+    DTIUScheduler(Server *server, StatisticsData* statistics);
     virtual ~DTIUScheduler();
 
     void doSchedule();
@@ -42,6 +42,7 @@ private:
 
     /** 计算指定的请求的优先级 */
     double calculatePriority(SimpleRequest &request);
+
 };
 
 #endif /* DTIUSCHEDULER_H_ */

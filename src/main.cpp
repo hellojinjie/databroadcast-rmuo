@@ -29,53 +29,67 @@ int main()
     run();
 }
 
-void sin()
+void requestDeadlineMissRatio()
 {
-    Server sinServer;
+    map<int, pair<ConfigureItem, StatisticsData> > sinCollected;
+    map<int, pair<ConfigureItem, StatisticsData> > dtiuCollected;
 
-    SINScheduler sinScheduler(&sinServer);
-    MobileClient sinClient(&sinServer, 10);
+    list<ConfigureItem> configureItems = Configure::getInstance("requestDeadlineMissRatio");
+    list<ConfigureItem>::iterator iter;
 
-    sinServer.setClient(&sinClient);
-    sinServer.setScheduler(&sinScheduler);
-    sinServer.startSimulation();
-}
+    int i;
+    /* sin 算法 */
+    for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
+    {
+        StatisticsData statistics;
 
-void dtiu()
-{
-    Server dtiuServer;
+        Server server;
+        MobileClient client(&server, iter->clientNumber, *iter);
+        SINScheduler scheduler(&server, &statistics);
 
-    DTIUScheduler dtiuScheduler(&dtiuServer);
-    MobileClient dtiuClient(&dtiuServer, 10);
+        server.setClient(&client);
+        server.setScheduler(&scheduler);
 
-    dtiuServer.setClient(&dtiuClient);
-    dtiuServer.setScheduler(&dtiuScheduler);
-    dtiuServer.startSimulation();
-}
+        server.startSimulation();
+        sinCollected.insert(pair<int, pair<ConfigureItem, StatisticsData> >
+                (i, pair<ConfigureItem, StatisticsData> (*iter, statistics)));
+    }
 
-void rmuo()
-{
-    Server rmuoServer;
+    /* dtiu 算法 */
+    for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
+    {
+        StatisticsData statistics;
 
-    RMUOScheduler rmuoScheduler(&rmuoServer);
-    RMUOClient rmuoClient(&rmuoServer, 10);
+        Server server;
+        MobileClient client(&server, iter->clientNumber, *iter);
+        DTIUScheduler scheduler(&server, &statistics);
 
-    rmuoServer.setClient(&rmuoClient);
-    rmuoServer.setScheduler(&rmuoScheduler);
-    rmuoServer.startSimulation();
+        server.setClient(&client);
+        server.setScheduler(&scheduler);
+
+        server.startSimulation();
+        dtiuCollected.insert(pair<int, pair<ConfigureItem, StatisticsData> >
+                (i, pair<ConfigureItem, StatisticsData> (*iter, statistics)));
+    }
+
+    for (map<int, pair<ConfigureItem, StatisticsData> >::iterator iter = sinCollected.begin();
+            iter != sinCollected.end(); iter++)
+    {
+        cout << iter->second.first.queryItemNumberMin << " " << iter->second.first.queryItemNumberMax << " "
+                << iter->second.second.getDeadlineMissRatio() << endl;
+    }
+
+    for (map<int, pair<ConfigureItem, StatisticsData> >::iterator iter = dtiuCollected.begin();
+            iter != dtiuCollected.end(); iter++)
+    {
+        cout << iter->second.first.queryItemNumberMin << " " << iter->second.first.queryItemNumberMax << " "
+                << iter->second.second.getDeadlineMissRatio() << endl;
+    }
 }
 
 void run()
 {
-    /* sin 调度算法 */
-    //sin();
-
-    /* dtiu 调度算法 */
-    //dtiu();
-
-    /* rmuo 调度算法 */
-    //rmuo();
-    Configure config("simulation.conf.js");
+    requestDeadlineMissRatio();
 }
 
 void rand_init()

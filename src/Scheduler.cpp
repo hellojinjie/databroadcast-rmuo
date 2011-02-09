@@ -14,9 +14,10 @@ Scheduler::Scheduler()
 
 }
 
-Scheduler::Scheduler(Server *server)
+Scheduler::Scheduler(Server *server, StatisticsData* statistics)
 {
     this->server = server;
+    this->statistics = statistics;
 }
 
 Scheduler::~Scheduler()

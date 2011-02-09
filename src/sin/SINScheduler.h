@@ -32,13 +32,12 @@ class SINScheduler: public Scheduler
 {
 public:
     SINScheduler();
-    SINScheduler(Server *server);
+    SINScheduler(Server *server, StatisticsData* statistics);
     virtual ~SINScheduler();
 
     void doSchedule();
 
 private:
-
     list<SINDataItem> requestItems;
     list<SimpleRequest> scheduleQueue;
 };

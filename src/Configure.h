@@ -8,22 +8,17 @@
 #define CONFIGURE_H_
 
 #include <string>
+#include <map>
+#include <list>
 
 using namespace std;
 
-class Configure
+typedef struct TagConfigureItem
 {
-public:
-    virtual ~Configure();
-    Configure(char *filename);
-
-private:
-    void readConfigFiel();
-
-    /* properties */
-public:
     /* 数据库大小 */
     int dbsize;
+    /* 总的时槽数 */
+    int totalSlot;
     /* 客户端数量 */
     int clientNumber;
     /* 每次请求访问的数据项的个数的最小值 */
@@ -35,10 +30,32 @@ public:
     /* 每次请求的周期的最大值 */
     int queryPeriodMax;
     /* zipf 分布函数的参数 */
-    int theta;
+    double theta;
+    /* 实验数据的结果输出到那个文件 */
+    string resultOutputFilename;
+
+    bool operator< (const TagConfigureItem& a) const
+    {
+        return queryPeriodMin < a.queryItemNumberMin;
+    }
+
+} ConfigureItem;
+
+class Configure
+{
+public:
+    virtual ~Configure();
+    static list<ConfigureItem>& getInstance(string algorithmName);
+    Configure();
 
 private:
-    char *configFilename;
+    void readConfigFile();
+
+public:
+    static string configFilename;
+
+private:
+    map<string, list<ConfigureItem> > configure;
 };
 
 #endif /* CONFIGURE_H_ */

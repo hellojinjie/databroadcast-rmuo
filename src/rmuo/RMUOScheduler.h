@@ -17,8 +17,7 @@ using namespace std;
 class RMUOScheduler: public Scheduler
 {
 public:
-    RMUOScheduler();
-    RMUOScheduler(Server *server);
+    RMUOScheduler(Server *server, StatisticsData* statistics);
     virtual ~RMUOScheduler();
 
     void doSchedule();
@@ -51,6 +50,7 @@ private:
     bool static requestComparison(RMUORequest r1, RMUORequest r2);
 
     bool isInList(list<int> l, int i);
+
 };
 
 #endif /* RMUOSCHEDULER_H_ */

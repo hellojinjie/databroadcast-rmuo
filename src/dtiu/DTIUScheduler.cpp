@@ -9,7 +9,7 @@
 
 using namespace std;
 
-DTIUScheduler::DTIUScheduler(Server *server) : Scheduler(server)
+DTIUScheduler::DTIUScheduler(Server *server, StatisticsData* statistics) : Scheduler(server, statistics)
 {
 
 }
@@ -21,8 +21,12 @@ DTIUScheduler::~DTIUScheduler()
 
 void DTIUScheduler::doSchedule()
 {
+    statistics->totalRequest += pendingQueue.size();
+
     /* first, 检查有没有错过截止期的 */
-    checkDeadline();
+    int count = checkDeadline();
+
+    statistics->missDeadlineRequest += count;
 
     /* second, 对 pendingQueue 进行预处理 */
     preprocess();
@@ -67,7 +71,8 @@ int DTIUScheduler::checkDeadline()
 /** 为啥这个要单独一个函数啊？ */
 int DTIUScheduler::checkDeadline(list<SimpleRequest> &pendingQueue)
 {
-    int deadlineMissCount;
+    /* 变量定义了，在用之前一定要记得初始化 */
+    int deadlineMissCount = 0;
 
     list<SimpleRequest>::iterator iter;
     for (iter = pendingQueue.begin(); iter != pendingQueue.end(); )

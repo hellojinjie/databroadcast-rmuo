@@ -1,5 +1,5 @@
 /*
- * SINScheduler.cpp
+  * SINScheduler.cpp
  *
  *  Created on: 2011-1-11
  */
@@ -14,10 +14,9 @@ SINScheduler::SINScheduler()
 
 }
 
-SINScheduler::SINScheduler(Server *server) :
-    Scheduler(server)
+SINScheduler::SINScheduler(Server *server, StatisticsData* statistics) :
+    Scheduler(server, statistics)
 {
-
 }
 
 SINScheduler::~SINScheduler()
@@ -76,6 +75,8 @@ void SINScheduler::doSchedule()
                         }
                     }
                     cout << "该请求错过截止期, id:" << scheduleIter->id << endl;
+                    /* 记录错过截止期的请求个数 */
+                    statistics->missDeadlineRequest++;
                     scheduleIter = scheduleQueue.erase(scheduleIter);
                     cout << "after erase scheduleQueue size:" << scheduleQueue.size() << endl;
                 }
@@ -105,6 +106,8 @@ void SINScheduler::doSchedule()
 
     /* second, 处理 pendingQueue 里的请求,将请求加入到 scheduleQueue */
     cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
+    /* 记录总的请求个数 */
+    statistics->totalRequest += pendingQueue.size();
     for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
             != pendingQueue.end(); requestIter++)
     {
@@ -112,6 +115,7 @@ void SINScheduler::doSchedule()
         if (requestIter->arrivalTime + requestIter->period < (int)this->server->getClock())
         {
             /* TODO 这里要记录错过截止期的请求 */
+            statistics->missDeadlineRequest++;
             continue;
         }
         /* 将新加入的请求中的ReadSet 中的data item 加入到 requestItems */

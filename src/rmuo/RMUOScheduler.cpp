@@ -10,15 +10,8 @@
 
 using namespace std;
 
-
-RMUOScheduler::RMUOScheduler()
+RMUOScheduler::RMUOScheduler(Server *server, StatisticsData* statistics) : Scheduler(server, statistics)
 {
-
-}
-
-RMUOScheduler::RMUOScheduler(Server *server) : Scheduler(server)
-{
-
 }
 
 RMUOScheduler::~RMUOScheduler()

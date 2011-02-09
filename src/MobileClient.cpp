@@ -10,15 +10,17 @@
 #include <cstdlib>
 #include <list>
 #include <iostream>
+#include "Configure.h"
 
 using namespace std;
 
-MobileClient::MobileClient(Server *server, int count)
+MobileClient::MobileClient(Server *server, int count, ConfigureItem configure)
 {
     this->initId = 0;
-    zipf_init(1000, 1.0, &this->z);
+    zipf_init(configure.dbsize, configure.theta, &this->z);
     this->setServer(server);
     this->clientCount = count;
+    this->configure = configure;
     this->generateClients();
 }
 
@@ -38,10 +40,10 @@ void MobileClient::generateClients()
         client.lastRequestTime = -1;
 
         /* 请求周期服从均匀分布 */
-        client.period = uniform(11, 23);
+        client.period = uniform(configure.queryPeriodMin, configure.queryPeriodMax);
 
         /* 请求的数据项个数，服从均匀分布，请求的内容服从 zipf 分布 */
-        int readSetCount = uniform(1, 2);
+        int readSetCount = uniform(configure.queryItemNumberMin, configure.queryItemNumberMax);
         int j = client.readSet.size();
         while (j < readSetCount)
         {

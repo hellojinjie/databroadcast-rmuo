@@ -10,6 +10,7 @@
 #include <list>
 #include "MobileClient.h"
 #include "SimpleRequest.h"
+#include "Statistics.h"
 
 using namespace std;
 
@@ -20,7 +21,7 @@ class Scheduler
 {
 public:
     Scheduler();
-    Scheduler(Server *server);
+    Scheduler(Server *server, StatisticsData* statistics);
     virtual ~Scheduler();
 
     /**
@@ -40,10 +41,16 @@ public:
     /** 判断该 data 是否在该 request 的read set 中 */
     virtual bool isInReadSet(SimpleRequest request, int data);
 
+    virtual const StatisticsData& getStatistics()
+    {
+        return *statistics;
+    }
+
 protected:
     /* they should be protected, not private */
     Server *server;
     list<SimpleRequest> pendingQueue;
+    StatisticsData* statistics;
 };
 
 #endif /* SCHEDULER_H_ */
