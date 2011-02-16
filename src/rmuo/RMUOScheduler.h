@@ -20,7 +20,7 @@ public:
     RMUOScheduler(Server *server, StatisticsData* statistics);
     virtual ~RMUOScheduler();
 
-    void doSchedule();
+    bool doSchedule();
 
 private:
     /** 已经按 period 从小到大排序的队列，如果 period 相等，按 request id 排序 */
@@ -37,8 +37,10 @@ private:
     /** 在一个 hyperPeriod 内广播数据项 */
     void broadcast();
 
-    /* 每发送一个数据项就对每个请求检查是否已经错过了截止期了，如果有错过的，就说明程序错了，或算法错了。 */
-    void checkDeadline();
+    /** 每发送一个数据项就对每个请求检查是否已经错过了截止期了，
+     * @param dataItem 刚刚发送的数据项
+     * 如果有错过的，就说明程序错了，或算法错了。 */
+    void checkDeadline(int dataItem);
 
     /** 检查 scheduleQueue，验证其是否可调度 */
     bool verifySchedulability();

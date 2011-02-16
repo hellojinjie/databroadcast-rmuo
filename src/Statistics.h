@@ -24,6 +24,10 @@ typedef struct TagStatisticsData
 
     double getDeadlineMissRatio()
     {
+        if (totalRequest == 0)
+        {
+            return 1;
+        }
         return (double) missDeadlineRequest / (double) totalRequest;
     }
 

@@ -1,0 +1,34 @@
+client id:1 period: 13 read set: 3 54 
+client id:2 period: 40 read set: 5 3 35 
+client id:3 period: 17 read set: 57 
+client id:4 period: 15 read set: 60 189 
+client id:5 period: 40 read set: 90 80 
+client id:6 period: 20 read set: 11 
+client id:7 period: 12 read set: 8 70 
+client id:8 period: 36 read set: 13 
+client id:9 period: 36 read set: 138 15 25 
+client id:10 period: 12 read set: 34 
+
+手工计算 utilization = 0.857, maxBound = 
+
+手工计算上面的 harmonicPeriod ，验证代码是否正确
+程序的计算结果是：
+in request:7 uniqueSet: 8 70 
+in request:10 uniqueSet: 34 
+in request:1 uniqueSet: 3 54 
+in request:4 uniqueSet: 60 189 
+in request:3 uniqueSet: 57 
+in request:6 uniqueSet: 11 
+in request:8 uniqueSet: 13 
+in request:9 uniqueSet: 138 15 25 
+in request:2 uniqueSet: 5 35 
+in request:5 uniqueSet: 90 80 
+
+priority: 1 period: 12 has requests: 7 10 1 4 3 6 
+priority: 2 period: 24 has requests: 8 9 2 5 
+priorityLevels:2, hyperperiod:24, minPeriod:12
+unservered set, priority: 1, data: 8,70,34,3,54,60,189,57,11,
+unservered set, priority: 2, data: 13,138,15,25,5,35,90,80,
+
+手工计算结果是：
+。。。。。。

@@ -30,7 +30,7 @@ public:
      * 对于 SIN 来说，一个调度周期就是一个数据项
      * 对于DTIU来说，一个调度周期就是调度一个请求中的所有数据项
      */
-    virtual void doSchedule() = 0;
+    virtual bool doSchedule() = 0;
 
     /** 将请求加入待处理队列 */
     virtual void addRequests(list<SimpleRequest> requests);

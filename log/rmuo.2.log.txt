@@ -1,0 +1,118 @@
+client id:1 period: 19 read set: 45 
+client id:2 period: 14 read set: 36 
+client id:3 period: 15 read set: 17 
+client id:4 period: 19 read set: 60 
+client id:5 period: 20 read set: 135 
+client id:6 period: 12 read set: 173 
+client id:7 period: 17 read set: 111 
+client id:8 period: 17 read set: 19 
+client id:9 period: 11 read set: 57 
+client id:10 period: 10 read set: 99 
+一共生成客户端：10
+共生成请求个数：10
+in request:10 uniqueSet: 99 
+in request:9 uniqueSet: 57 
+in request:6 uniqueSet: 173 
+in request:2 uniqueSet: 36 
+in request:3 uniqueSet: 17 
+in request:7 uniqueSet: 111 
+in request:8 uniqueSet: 19 
+in request:1 uniqueSet: 45 
+in request:4 uniqueSet: 60 
+in request:5 uniqueSet: 135 
+
+priority: 1 period: 10 has requests: 10 9 6 2 3 7 8 1 4 
+priority: 2 period: 20 has requests: 5 
+broadcast item:99 at clock:1
+request: 10 received all data.
+broadcast item:57 at clock:2
+request: 9 received all data.
+broadcast item:173 at clock:3
+request: 6 received all data.
+broadcast item:36 at clock:4
+request: 2 received all data.
+broadcast item:17 at clock:5
+request: 3 received all data.
+broadcast item:111 at clock:6
+request: 7 received all data.
+broadcast item:19 at clock:7
+request: 8 received all data.
+broadcast item:45 at clock:8
+request: 1 received all data.
+broadcast item:60 at clock:9
+request: 4 received all data.
+broadcast item:135 at clock:10
+request: 5 received all data.
+broadcast item:99 at clock:11
+request: 10 received all data.
+broadcast item:57 at clock:12
+request: 9 received all data.
+broadcast item:173 at clock:13
+request: 6 received all data.
+broadcast item:36 at clock:14
+request: 2 received all data.
+broadcast item:17 at clock:15
+request: 3 received all data.
+broadcast item:111 at clock:16
+request: 7 received all data.
+broadcast item:19 at clock:17
+request: 8 received all data.
+broadcast item:45 at clock:18
+request: 1 received all data.
+broadcast item:60 at clock:19
+request: 4 received allAssertion failed: false, file ..\src\rmuo\RMUOScheduler.cpp, line 296
+
+This application has requested the Runtime to terminate it in an unusual way.
+Please contact the application's support team for more information.
+ data.
+server clock end: 19
+
+priority: 1 period: 10 has requests: 10 9 6 2 3 7 8 1 4 
+priority: 2 period: 20 has requests: 5 
+broadcast item:99 at clock:20
+request: 10 received all data.
+broadcast item:57 at clock:21
+request: 9 received all data.
+broadcast item:173 at clock:22
+request: 6 received all data.
+broadcast item:36 at clock:23
+request: 2 received all data.
+broadcast item:17 at clock:24
+request: 3 received all data.
+broadcast item:111 at clock:25
+request: 7 received all data.
+broadcast item:19 at clock:26
+request: 8 received all data.
+broadcast item:45 at clock:27
+request: 1 received all data.
+broadcast item:60 at clock:28
+request: 4 received all data.
+broadcast item:99 at clock:29
+request: 10 received all data.
+broadcast item:99 at clock:30
+request: 10 received all data.
+broadcast item:57 at clock:31
+request: 9 received all data.
+broadcast item:173 at clock:32
+request: 6 received all data.
+broadcast item:36 at clock:33
+request: 2 received all data.
+broadcast item:17 at clock:34
+request: 3 received all data.
+broadcast item:111 at clock:35
+request: 7 received all data.
+broadcast item:19 at clock:36
+request: 8 received all data.
+broadcast item:45 at clock:37
+request: 1 received all data.
+broadcast item:60 at clock:38
+request: 4 received all data.
+broadcast item:99 at clock:39
+request: 10 received all data.
+server clock end: 39
+
+priority: 1 period: 10 has requests: 10 9 6 2 3 7 8 1 4 
+priority: 2 period: 20 has requests: 5 
+broadcast item:99 at clock:40
+request: 10 received all data.
+在 RMUO 算法中有请求错过截止期了

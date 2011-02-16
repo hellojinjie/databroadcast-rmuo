@@ -7,6 +7,7 @@
 #include "RMUOScheduler.h"
 #include <cmath>
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -19,7 +20,7 @@ RMUOScheduler::~RMUOScheduler()
 
 }
 
-void RMUOScheduler::doSchedule()
+bool RMUOScheduler::doSchedule()
 {
     preprocess();
 
@@ -27,8 +28,8 @@ void RMUOScheduler::doSchedule()
     {
         if (!verifySchedulability())
         {
-            cout << "该请求队列不可调度，退出程序" << endl;
-            return;
+            cout << "该请求队列不可调度，结束该算法" << endl;
+            return false;
         }
 
         transformToHarmonic();
@@ -40,95 +41,9 @@ void RMUOScheduler::doSchedule()
         this->server->incrementAndGetClock();
         cout << "请求队列里没有数据，一个空的时槽" << endl;
     }
+
+    return true;
 }
-
-void RMUOScheduler::broadcast()
-{
-    int priorityLevels = harmonicQueue.size(); /* 共有多少个优先级 */
-    int hyperperiod = harmonicQueue[priorityLevels].front().harmonicPeriod;
-    int minPeriod = harmonicQueue[1].front().harmonicPeriod;
-
-    /* first, 为每一个优先级生成UnserveredSet */
-    map<int, list<int> > unserveredSet;
-    map<int, list<RMUORequest> >::iterator iter;
-    for (iter = harmonicQueue.begin(); iter != harmonicQueue.end(); iter++)
-    {
-        list<int> unservered;
-        for(list<RMUORequest>::iterator innerIter = iter->second.begin();
-                innerIter != iter->second.end(); innerIter++)
-        {
-            unservered.insert(unservered.end(), innerIter->uniqueSet.begin(), innerIter->uniqueSet.end());
-        }
-        pair<int, list<int> > data(iter->first, unservered);
-        unserveredSet.insert(data);
-    }
-
-    /* second, 按优先级广播数据 */
-    /* 先定义一个临时用的 map */
-    map<int, list<int> > workingSet = unserveredSet;
-    for (int clock = 0; clock < hyperperiod; clock++)
-    {
-        /* 先装填数据 */
-        for (int i = 1; i <= priorityLevels; i++)
-        {
-            /* 在该优先级的新一个广播周期到来的时候，初始化该优先级的未广播数据，
-             * 该算法已经确保在上个周期中，数据都已经广播出去，没有错过截止期的 */
-            if (clock % (i * minPeriod) == 0)
-            {
-                workingSet[i] = unserveredSet[i];
-            }
-        }
-
-        /* 然后挑优先级高的一个数据广播 */
-        for (int i = 1; i <= priorityLevels; i++)
-        {
-            if (workingSet[i].size() == 0)
-            {
-                continue;
-            }
-            else
-            {
-                int item = workingSet[i].front();
-                workingSet[i].pop_front();
-                int serverClock = this->server->incrementAndGetClock();
-                cout << "broadcast item:" << item << " at clock:" << serverClock << endl;
-                /* 检查其余的请求有没有错过截止期,这个应该针对每个数据项检查，还是每个请求检查 */
-                checkDeadline();
-                break;
-            }
-        }
-    }
-}
-
-void RMUOScheduler::checkDeadline()
-{
-
-}
-
-bool RMUOScheduler::verifySchedulability()
-{
-    double utilization = 0.0;
-    list<RMUORequest>::iterator scheduleQueueIter;
-    for (scheduleQueueIter = scheduleQueue.begin();
-            scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
-    {
-        utilization = utilization +
-                scheduleQueueIter->uniqueSet.size() / scheduleQueueIter->period;
-    }
-
-    int m = scheduleQueue.size();
-    double maxBound = (double) m * (pow(2, 1 / m) - 1.0);
-
-    if (utilization <= maxBound)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 
 void RMUOScheduler::preprocess()
 {
@@ -180,10 +95,40 @@ void RMUOScheduler::preprocess()
     }
 }
 
+bool RMUOScheduler::verifySchedulability()
+{
+    double utilization = 0.0;
+    list<RMUORequest>::iterator scheduleQueueIter;
+    for (scheduleQueueIter = scheduleQueue.begin();
+            scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
+    {
+        utilization = utilization +
+                (double)scheduleQueueIter->uniqueSet.size() / (double)scheduleQueueIter->period;
+    }
+
+    int m = scheduleQueue.size();
+    double maxBound = (double) ((double) m * (pow(2, 1.0 / m) - 1.0));
+
+    /* for debug */
+    cout << "utilization: " << utilization << ", maxBound: " << maxBound << endl;
+
+    if (utilization <= maxBound)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void RMUOScheduler::transformToHarmonic()
 {
+    /* zero, 先清空 harmonicQueue，这个不能忘了，不然这个队列的数据就越来越多了 */
+    harmonicQueue.clear();
+
     /* first, 找个那个 l_j */
-    RMUORequest shortestPeriodRequest = *scheduleQueue.begin();
+    RMUORequest shortestPeriodRequest = scheduleQueue.front();
     double l_star = 0;
     double A_j_min = 0;
     list<RMUORequest>::iterator iter;
@@ -200,8 +145,8 @@ void RMUOScheduler::transformToHarmonic()
         list<RMUORequest>::iterator innerIter;
         for (innerIter = scheduleQueue.begin(); innerIter != scheduleQueue.end(); innerIter++)
         {
-            A_j = A_j + innerIter->period / l_j *
-                    pow(2, floor(log(innerIter->period / shortestPeriodRequest.period) / log(2)));
+            A_j = A_j + innerIter->period /
+                    (l_j * pow(2, floor(log(innerIter->period / shortestPeriodRequest.period) / log(2))));
         }
 
         if (A_j_min == 0)
@@ -254,6 +199,130 @@ void RMUOScheduler::transformToHarmonic()
         cout << iter2->id << " ";
     }
     cout << endl;
+}
+
+void RMUOScheduler::broadcast()
+{
+    int priorityLevels = harmonicQueue.size(); /* 共有多少个优先级 */
+    int hyperperiod = harmonicQueue[priorityLevels].front().harmonicPeriod;
+    int minPeriod = harmonicQueue[1].front().harmonicPeriod;
+
+    /* first, 为每一个优先级生成UnserveredSet */
+    map<int, list<int> > unserveredSet;
+    map<int, list<RMUORequest> >::iterator iter;
+    for (iter = harmonicQueue.begin(); iter != harmonicQueue.end(); iter++)
+    {
+        list<int> unservered;
+        for(list<RMUORequest>::iterator innerIter = iter->second.begin();
+                innerIter != iter->second.end(); innerIter++)
+        {
+            unservered.insert(unservered.end(), innerIter->uniqueSet.begin(), innerIter->uniqueSet.end());
+        }
+        pair<int, list<int> > data(iter->first, unservered);
+        unserveredSet.insert(data);
+    }
+
+    /* for debug */
+    cout << "priorityLevels:" << priorityLevels << ", hyperperiod:" << hyperperiod
+            << ", minPeriod:" << minPeriod << endl;
+    for (map<int, list<int> >::const_iterator iter = unserveredSet.begin(); iter != unserveredSet.end(); iter++)
+    {
+        cout << "unservered set, priority: " << iter->first << ", data: ";
+        for (list<int>::const_iterator innerIter = iter->second.begin(); innerIter != iter->second.end(); innerIter++)
+        {
+            cout << *innerIter << ",";
+        }
+        cout << endl;
+    }
+
+    /* second, 按优先级广播数据 */
+    /* 先定义一个临时用的 map */
+    map<int, list<int> > workingSet;
+    for (int clock = 0; clock < hyperperiod; clock++)
+    {
+        /* 开始之前先收集统计数据:总的请求个数
+         * 并且做必要的初始化 */
+        list<RMUORequest>::iterator iter;
+        for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
+        {
+            int rightTime = this->server->getClock() % iter->period;
+            if (rightTime == 0)
+            {
+                iter->arrivalTime = this->server->getClock();
+                iter->receivedSet.clear();
+                statistics->totalRequest++;
+            }
+        }
+
+        /* 先装填数据 */
+        for (int i = 1; i <= priorityLevels; i++)
+        {
+            /* 在该优先级的新一个广播周期到来的时候，初始化该优先级的未广播数据，
+             * 该算法已经确保在上个周期中，数据都已经广播出去，没有错过截止期的 */
+            if (clock % (i * minPeriod) == 0)
+            {
+                workingSet[i] = unserveredSet[i];
+            }
+        }
+
+        /* 然后挑优先级高的一个数据广播 */
+        int i = 1;
+        for (i = 1; i <= priorityLevels; i++)
+        {
+            if (workingSet[i].size() == 0)
+            {
+                continue;
+            }
+            else
+            {
+                int item = workingSet[i].front();
+                workingSet[i].pop_front();
+                int serverClock = this->server->incrementAndGetClock();
+                cout << "broadcast item:" << item << " at clock:" << serverClock << endl;
+                /* 检查其余的请求有没有错过截止期,这个应该针对每个数据项检查，还是每个请求检查
+                 * 这里正对什么检查是没关系的，因为这个算法只要有错过截止期了，就说明算法错了*/
+                checkDeadline(item);
+                break;
+            }
+        }
+
+        /* 判断上一步有没有数据广播出去 */
+        if (i > priorityLevels)
+        {
+            int serverClock = this->server->incrementAndGetClock();
+            cout << "no item broadcast at clock: " << serverClock << endl;
+        }
+    }
+}
+
+void RMUOScheduler::checkDeadline(int dataItem)
+{
+    list<RMUORequest>::iterator iter;
+    for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
+    {
+        /* 先调整 receivedSet */
+        if (isInList(iter->readSet, dataItem))
+        {
+            /* 下面这行的前提是什么？
+             * 每个周期结束后，receivedSet 都要正确的清空 */
+            iter->receivedSet.push_back(dataItem);
+            iter->receivedSet.unique();
+            if (iter->receivedSet.size() == iter->readSet.size())
+            {
+                cout << "request: " << iter->id << " received all data." << endl;
+            }
+        }
+
+        /* 检查是否有错过截止期的
+         * 每个算法的检查方法都是不一样的，不可以照搬 */
+        if (server->getClock() + (int)iter->readSet.size() - (int)iter->receivedSet.size()
+                > iter->arrivalTime + iter->period)
+        {
+            /* 不应该会运行到这里的  */
+            cout << "在 RMUO 算法中有请求错过截止期了" << endl;
+            assert(false);
+        }
+    }
 }
 
 bool RMUOScheduler::requestComparison(RMUORequest r1, RMUORequest r2)

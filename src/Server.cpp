@@ -27,7 +27,11 @@ void Server::startSimulation()
         list<SimpleRequest> requests;
         this->client->generateRequests(requests);
         this->scheduler->addRequests(requests);
-        this->scheduler->doSchedule();
+        if (!this->scheduler->doSchedule())
+        {
+            cout << "无法完成调度。" << endl;
+            break;
+        }
 
         cout << "server clock end: " << this->getClock() << endl;
 

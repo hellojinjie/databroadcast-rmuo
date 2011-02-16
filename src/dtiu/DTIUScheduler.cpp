@@ -19,7 +19,7 @@ DTIUScheduler::~DTIUScheduler()
 
 }
 
-void DTIUScheduler::doSchedule()
+bool DTIUScheduler::doSchedule()
 {
     statistics->totalRequest += pendingQueue.size();
 
@@ -44,6 +44,7 @@ void DTIUScheduler::doSchedule()
         cout << "调度队列里没有数据，一个空的时槽" << endl;
         server->incrementAndGetClock();
     }
+    return true;
 }
 
 int DTIUScheduler::checkDeadline()
@@ -53,6 +54,7 @@ int DTIUScheduler::checkDeadline()
     list<SimpleRequest>::iterator iter;
     for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); )
     {
+        /* 三个算法检查的方法都是不一样的，要仔细想 */
         if (iter->arrivalTime + iter->period < server->getClock() + (int)(iter->readSet.size()))
         {
             cout << "该请求错过截止期：" << iter->id << endl;

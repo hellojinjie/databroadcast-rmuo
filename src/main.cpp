@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <iostream>
+#include <fstream>
 #include <ctime>
 #include <cstdlib>
 #include "Server.h"
@@ -25,7 +26,6 @@ void rand_init();
 
 int main()
 {
-    rand_init();
     run();
 }
 
@@ -33,12 +33,17 @@ void requestDeadlineMissRatio()
 {
     map<int, pair<ConfigureItem, StatisticsData> > sinCollected;
     map<int, pair<ConfigureItem, StatisticsData> > dtiuCollected;
+    map<int, pair<ConfigureItem, StatisticsData> > rmuoCollected;
 
     list<ConfigureItem> configureItems = Configure::getInstance("requestDeadlineMissRatio");
     list<ConfigureItem>::iterator iter;
 
-    int i;
+    /* 每个算法的随机数种子都要一样 */
+    long seed = time(0);
+
+    int i; /* 这里的 i 就是 map 的第一个参数 */
     /* sin 算法 */
+    srand(seed);
     for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
     {
         StatisticsData statistics;
@@ -56,6 +61,7 @@ void requestDeadlineMissRatio()
     }
 
     /* dtiu 算法 */
+    srand(seed);
     for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
     {
         StatisticsData statistics;
@@ -72,19 +78,54 @@ void requestDeadlineMissRatio()
                 (i, pair<ConfigureItem, StatisticsData> (*iter, statistics)));
     }
 
+    /* rmuo 算法 */
+    srand(seed);
+    for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
+    {
+        StatisticsData statistics;
+
+        Server server;
+        RMUOClient client(&server, iter->clientNumber, *iter);
+        RMUOScheduler scheduler(&server, &statistics);
+
+        server.setClient(&client);
+        server.setScheduler(&scheduler);
+
+        server.startSimulation();
+        rmuoCollected.insert(pair<int, pair<ConfigureItem, StatisticsData> >
+               (i, pair<ConfigureItem, StatisticsData> (*iter, statistics)));
+    }
+
+    /* 打印结果 */
+    fstream result("requestDeadlineMissRatio.result.txt", fstream::out);
+
+    result << "sin statistics(QueryItem)" << endl;
+    result << "min\tmax\tratio" << endl;
     for (map<int, pair<ConfigureItem, StatisticsData> >::iterator iter = sinCollected.begin();
             iter != sinCollected.end(); iter++)
     {
-        cout << iter->second.first.queryItemNumberMin << " " << iter->second.first.queryItemNumberMax << " "
+        result << iter->second.first.queryItemNumberMin << "\t" << iter->second.first.queryItemNumberMax << "\t"
                 << iter->second.second.getDeadlineMissRatio() << endl;
     }
 
+    result << "dtiu statistics(QueryItem)" << endl;
+    result << "min\tmax\tratio" << endl;
     for (map<int, pair<ConfigureItem, StatisticsData> >::iterator iter = dtiuCollected.begin();
             iter != dtiuCollected.end(); iter++)
     {
-        cout << iter->second.first.queryItemNumberMin << " " << iter->second.first.queryItemNumberMax << " "
+        result << iter->second.first.queryItemNumberMin << "\t" << iter->second.first.queryItemNumberMax << "\t"
                 << iter->second.second.getDeadlineMissRatio() << endl;
     }
+
+    result << "rmuo statistics(QueryItem)" << endl;
+    result << "min\tmax\tratio" << endl;
+    for (map<int, pair<ConfigureItem, StatisticsData> >::iterator iter = rmuoCollected.begin();
+            iter != rmuoCollected.end(); iter++)
+    {
+        result << iter->second.first.queryItemNumberMin << "\t" << iter->second.first.queryItemNumberMax << "\t"
+                << iter->second.second.getDeadlineMissRatio() << endl;
+    }
+    result.close();
 }
 
 void run()

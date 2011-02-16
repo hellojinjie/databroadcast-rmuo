@@ -15,14 +15,14 @@
         /* 每次请求的周期的最小值 */
         "queryPeriodMin" : 10,
         /* 每次请求的周期的最大值 */
-        "queryPeriodMax" : 20,
+        "queryPeriodMax" : 40,
         /* zipf 分布函数的参数 */
         "theta" : 0.8
     },
     
     "requestDeadlineMissRatio" : {
         "resultOutputFilename" : "result/requestDeadlineMissRatio.txt",
-        "config" : [{
+        "config" : [ {
             "queryItemNumberMin" : 1,
             "queryItemNumberMax" : 1
         }, {
@@ -37,7 +37,6 @@
         }, {
             "queryItemNumberMin" : 7,
             "queryItemNumberMax" : 9
-        }
-        ]
+        } ]
     }
 }

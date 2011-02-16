@@ -35,7 +35,7 @@ public:
     SINScheduler(Server *server, StatisticsData* statistics);
     virtual ~SINScheduler();
 
-    void doSchedule();
+    bool doSchedule();
 
 private:
     list<SINDataItem> requestItems;

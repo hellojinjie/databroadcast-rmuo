@@ -22,6 +22,8 @@ typedef struct TagRMUORequest
 
     list<int> readSet;
 
+    list<int> receivedSet;
+
     list<int> uniqueSet;
 
     bool operator==(TagRMUORequest request)

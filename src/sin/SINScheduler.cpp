@@ -30,7 +30,7 @@ SINScheduler::~SINScheduler()
  * 应该将这个方法分拆成几个小的方法
  * 在第一步中有检查 deadline ，在第二步也有检查 deadline ，这两步的顺序不能错了
  */
-void SINScheduler::doSchedule()
+bool SINScheduler::doSchedule()
 {
     cout << "开始一次调度" << endl;
 
@@ -158,7 +158,7 @@ void SINScheduler::doSchedule()
         /* 没有数据项要广播, 一个空的时槽 */
         int time = server->incrementAndGetClock();
         cout << "当前时刻没有数据项要发送，serverClock:" << time << endl;
-        return;
+        return true;
     }
     list<SINDataItem>::iterator minimumSINItem = requestItems.begin();
     double minimumSINValue = (double) (minimumSINItem->deadline - server->getClock()) /
@@ -199,6 +199,7 @@ void SINScheduler::doSchedule()
     {
         if (this->isInReadSet(*scheduleQueueIter, minimumSINItem->item))
         {
+            /* 哈哈，这个想法都想的出来。 */
             scheduleQueueIter->receivedItem.push_back(minimumSINItem->item);
             scheduleQueueIter->receivedItem.unique();
             if (scheduleQueueIter->receivedItem.size() == scheduleQueueIter->readSet.size())
@@ -213,4 +214,6 @@ void SINScheduler::doSchedule()
     {
         scheduleQueue.remove(*i);
     }
+
+    return true;
 }

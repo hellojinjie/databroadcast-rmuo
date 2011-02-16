@@ -18,7 +18,7 @@ public:
     DTIUScheduler(Server *server, StatisticsData* statistics);
     virtual ~DTIUScheduler();
 
-    void doSchedule();
+    bool doSchedule();
 
 private:
 
