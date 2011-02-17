@@ -20,7 +20,7 @@
         /* zipf 分布函数的参数 */
         "theta" : 0.8,
         /* 随机数种子 , 0 表示用当前时间 */
-        "seed" : 0
+        "seed" : 1297909173
     },
     
     "requestDeadlineMissRatio" : {

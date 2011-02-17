@@ -39,7 +39,14 @@ void requestDeadlineMissRatio()
     list<ConfigureItem>::iterator iter;
 
     /* 每个算法的随机数种子都要一样 */
-    long seed = time(0);
+    long seed = configureItems.front().seed;
+    if (seed == 0)
+    {
+        seed = time(0);
+    }
+
+    /* 把种子打印出来，用来重现上次的计算过程 */
+    cout << "seed: " << seed << endl;
 
     int i; /* 这里的 i 就是 map 的第一个参数 */
     /* sin 算法 */

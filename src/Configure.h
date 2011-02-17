@@ -31,6 +31,8 @@ typedef struct TagConfigureItem
     int queryPeriodMax;
     /* zipf 分布函数的参数 */
     double theta;
+    /* 随机数种子 */
+    long seed;
     /* 实验数据的结果输出到那个文件 */
     string resultOutputFilename;
 
