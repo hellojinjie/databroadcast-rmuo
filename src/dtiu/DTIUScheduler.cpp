@@ -102,6 +102,21 @@ void DTIUScheduler::preprocess()
         scheduleQueue.push_back(*iter);
     }
     cout << "加入 scheduleQueue 请求个数：" << pendingQueue.size() << endl;
+
+    /* XXX 这里我想要更新的是 BandwidthUtilization
+     * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
+     */
+    if (this->statistics->bandwidthUtilization == 0)
+    {
+        double utilization = 0.0;
+        list<SimpleRequest>::const_iterator iter;
+        for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
+        {
+            utilization += (double) iter->readSet.size() / (double) iter->period;
+        }
+        this->statistics->bandwidthUtilization = utilization;
+    }
+
     pendingQueue.clear();
 }
 

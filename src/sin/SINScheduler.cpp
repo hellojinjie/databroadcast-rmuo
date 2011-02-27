@@ -57,7 +57,7 @@ bool SINScheduler::doSchedule()
                 if (this->isInReadSet(*scheduleIter, item.item))
                 {
                     /* 这个数据项错过了截止期，该request 请求了这个数据项，就说明他也错过截止期了
-                     * TODO 这个还应该更新 deadline miss ratio
+                     * 这个还应该更新 deadline miss ratio
                      * 这个request 还请求了其他数据项，将相应的 requestCount 减一 */
                     scheduleIter->readSet.remove(item.item);
                     list<int>::iterator otherDataIter;
@@ -114,7 +114,7 @@ bool SINScheduler::doSchedule()
         /* 先判断要加入的这个请求是不是已经错过截止期了 */
         if (requestIter->arrivalTime + requestIter->period < (int)this->server->getClock())
         {
-            /* TODO 这里要记录错过截止期的请求 */
+            /* 这里要记录错过截止期的请求 */
             statistics->missDeadlineRequest++;
             continue;
         }
@@ -152,7 +152,21 @@ bool SINScheduler::doSchedule()
     pendingQueue.clear();
     cout << "scheduleQueue 共有请求个数: " << scheduleQueue.size() << endl;
 
-    /* third,  计算优先级，并选取 sin-1 值最小的那个data item广播*/
+    /* XXX 这里我想要更新的是 BandwidthUtilization
+    * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
+    */
+    if (this->statistics->bandwidthUtilization == 0)
+    {
+       double utilization = 0.0;
+       list<SimpleRequest>::const_iterator iter;
+       for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
+       {
+           utilization += (double) iter->readSet.size() / (double) iter->period;
+       }
+       this->statistics->bandwidthUtilization = utilization;
+    }
+
+    /* third, 计算优先级，并选取 sin-1 值最小的那个data item广播*/
     if (requestItems.size() == 0)
     {
         /* 没有数据项要广播, 一个空的时槽 */

@@ -16,10 +16,13 @@ typedef struct TagStatisticsData
     int totalRequest;
     int missDeadlineRequest;
 
+    double bandwidthUtilization;
+
     TagStatisticsData()
     {
         totalRequest = 0;
         missDeadlineRequest = 0;
+        bandwidthUtilization = 0;
     }
 
     double getDeadlineMissRatio()

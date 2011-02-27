@@ -36,7 +36,6 @@ Configure::~Configure()
  */
 void Configure::readConfigFile()
 {
-    /* 此配置文件的编码是 GB18030， UTF8-with-BOM 不能读取，只能读 UTF8-without-BOM  */
     fstream configStream;
     configStream.open(configFilename.c_str(), fstream::in);
 
@@ -67,6 +66,7 @@ void Configure::readConfigFile()
     item.theta = root["common"]["theta"].asDouble();
 
     item.resultOutputFilename = root["requestDeadlineMissRatio"]["resultOutputFilename"].asString();
+    item.enable = root["requestDeadlineMissRatio"]["enable"].asBool();
     for (unsigned int i = 0; i < root["requestDeadlineMissRatio"]["config"].size(); i++)
     {
         item.queryItemNumberMin = root["requestDeadlineMissRatio"]["config"][i]["queryItemNumberMin"].asInt();
@@ -75,4 +75,12 @@ void Configure::readConfigFile()
         configure["requestDeadlineMissRatio"].push_back(item);
     }
 
+    item.queryItemNumberMin = root["common"]["queryItemNumberMin"].asInt();
+    item.queryItemNumberMax = root["common"]["queryItemNumberMax"].asInt();
+    item.resultOutputFilename = root["utilizationAndDeadlineMissRatio"]["resultOutputFilename"].asString();
+    item.enable = root["utilizationAndDeadlineMissRatio"]["enable"].asBool();
+    item.clientNumberMin = root["utilizationAndDeadlineMissRatio"]["config"]["clientNumberMin"].asInt();
+    item.clientNumberMax = root["utilizationAndDeadlineMissRatio"]["config"]["clientNumberMax"].asInt();
+    item.clientNumberIncreaseStep = root["utilizationAndDeadlineMissRatio"]["config"]["clientNumberIncreaseStep"].asInt();
+    configure["utilizationAndDeadlineMissRatio"].push_back(item);
 }

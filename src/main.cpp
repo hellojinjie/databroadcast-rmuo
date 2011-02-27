@@ -38,6 +38,12 @@ void requestDeadlineMissRatio()
     list<ConfigureItem> configureItems = Configure::getInstance("requestDeadlineMissRatio");
     list<ConfigureItem>::iterator iter;
 
+    if (!configureItems.front().enable)
+    {
+        cout << "requestDeadlineMissRatio is disabled..." << endl << endl;
+        return;
+    }
+
     /* 每个算法的随机数种子都要一样 */
     long seed = configureItems.front().seed;
     if (seed == 0)
@@ -46,13 +52,14 @@ void requestDeadlineMissRatio()
     }
 
     /* 把种子打印出来，用来重现上次的计算过程 */
+    cout << "requestDeadlineMissRatio start..." << endl;
     cout << "seed: " << seed << endl;
 
     int i; /* 这里的 i 就是 map 的第一个参数 */
     /* sin 算法 */
-    srand(seed);
     for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
     {
+        srand(seed);
         StatisticsData statistics;
 
         Server server;
@@ -68,9 +75,9 @@ void requestDeadlineMissRatio()
     }
 
     /* dtiu 算法 */
-    srand(seed);
     for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
     {
+        srand(seed);
         StatisticsData statistics;
 
         Server server;
@@ -86,9 +93,9 @@ void requestDeadlineMissRatio()
     }
 
     /* rmuo 算法 */
-    srand(seed);
     for (iter = configureItems.begin(), i = 0; iter != configureItems.end(); iter++, i++)
     {
+        srand(seed);
         StatisticsData statistics;
 
         Server server;
@@ -104,7 +111,7 @@ void requestDeadlineMissRatio()
     }
 
     /* 打印结果 */
-    fstream result("requestDeadlineMissRatio.result.txt", fstream::out);
+    fstream result(configureItems.front().resultOutputFilename.c_str(), fstream::out);
 
     result << "sin statistics(QueryItem)" << endl;
     result << "min\tmax\tratio" << endl;
@@ -135,9 +142,98 @@ void requestDeadlineMissRatio()
     result.close();
 }
 
+template<class Server, class Scheduler, class Client>
+void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureItem, StatisticsData> > &collected)
+{
+    list<ConfigureItem> configureItems = Configure::getInstance("utilizationAndDeadlineMissRatio");
+
+    int clientNumberMin = configureItems.front().clientNumberMin;
+    int clientNumberMax = configureItems.front().clientNumberMax;
+    int clientNumberIncreaseStep = configureItems.front().clientNumberIncreaseStep;
+
+    for (int clientNumber = clientNumberMin; clientNumber <= clientNumberMax; clientNumber += clientNumberIncreaseStep)
+    {
+        srand(seed);
+        StatisticsData statistics;
+
+        Server server;
+        Scheduler scheduler(&server, &statistics);
+        Client client(&server, clientNumber, configureItems.front());
+
+        server.setClient(&client);
+        server.setScheduler(&scheduler);
+
+        server.startSimulation();
+        collected.push_back(pair<ConfigureItem, StatisticsData> (configureItems.front(), statistics));
+    }
+}
+
+void printUtilizationAndDeadlineMissRatio(fstream &resultStream, string title, list<pair<ConfigureItem, StatisticsData> > &collected)
+{
+    list<ConfigureItem> configureItems = Configure::getInstance("utilizationAndDeadlineMissRatio");
+
+    int clientNumberMin = configureItems.front().clientNumberMin;
+    int clientNumberIncreaseStep = configureItems.front().clientNumberIncreaseStep;
+    int i = 0;
+    resultStream << title << endl;
+    resultStream << "client\tratio\tutilaztion" << endl;
+    for (list<pair<ConfigureItem, StatisticsData> >::iterator iter = collected.begin();
+           iter != collected.end(); iter++)
+    {
+        resultStream << (clientNumberMin + clientNumberIncreaseStep * i++) << "\t"
+               << iter->second.getDeadlineMissRatio() << "\t"
+               << iter->second.bandwidthUtilization << endl;
+    }
+}
+
+void utilizationAndDeadlineMissRatio()
+{
+    list<pair<ConfigureItem, StatisticsData> > sinCollected;
+    list<pair<ConfigureItem, StatisticsData> > dtiuCollected;
+    list<pair<ConfigureItem, StatisticsData> > rmuoCollected;
+
+    list<ConfigureItem> configureItems = Configure::getInstance("utilizationAndDeadlineMissRatio");
+
+    if (!configureItems.front().enable)
+    {
+        cout << "utilizationAndDeadlineMissRatio is disabled..." << endl << endl;
+        return;
+    }
+
+    /* 每个算法的随机数种子都要一样 */
+    long seed = configureItems.front().seed;
+    if (seed == 0)
+    {
+        seed = time(0);
+    }
+
+    /* 把种子打印出来，用来重现上次的计算过程 */
+    cout << "utilizationAndDeadlineMissRatio start..." << endl;
+    cout << "seed: " << seed << endl;
+
+    /* sin 算法 */
+    runBandwidthUtilizationAndDeadlineMissRatio<Server, SINScheduler, MobileClient>(seed, sinCollected);
+
+    /* dtiu 算法 */
+    runBandwidthUtilizationAndDeadlineMissRatio<Server, DTIUScheduler, MobileClient>(seed, dtiuCollected);
+
+    /* rmuo 算法 */
+    runBandwidthUtilizationAndDeadlineMissRatio<Server, RMUOScheduler, RMUOClient>(seed, rmuoCollected);
+
+    /* 打印结果 */
+    fstream result(configureItems.front().resultOutputFilename.c_str(), fstream::out);
+
+    printUtilizationAndDeadlineMissRatio(result, "sin client number range", sinCollected);
+    printUtilizationAndDeadlineMissRatio(result, "dtiu client number range", dtiuCollected);
+    printUtilizationAndDeadlineMissRatio(result, "rmuo client number range", rmuoCollected);
+
+    result.close();
+}
+
 void run()
 {
     requestDeadlineMissRatio();
+    utilizationAndDeadlineMissRatio();
 }
 
 void rand_init()

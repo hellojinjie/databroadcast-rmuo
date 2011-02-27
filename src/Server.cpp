@@ -22,6 +22,7 @@ Server::~Server()
 
 void Server::startSimulation()
 {
+
     while (true)
     {
         list<SimpleRequest> requests;
@@ -35,6 +36,7 @@ void Server::startSimulation()
 
         cout << "server clock end: " << this->getClock() << endl;
 
+        /* XXX 这里要注意 */
         if (this->getClock() >=
                 Configure::getInstance("requestDeadlineMissRatio").front().totalSlot)
         {

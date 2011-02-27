@@ -35,10 +35,20 @@ typedef struct TagConfigureItem
     long seed;
     /* 实验数据的结果输出到那个文件 */
     string resultOutputFilename;
+    /** 是否运行这个是实验 */
+    bool enable;
+
+    /* utilizationAndDeadlineMissRatio 中的参数 */
+    /* 客户端数量的最小值 */
+    int clientNumberMin;
+    /* 客户端数量的最大值 */
+    int clientNumberMax;
+    /* 客户端数量增加步长 */
+    int clientNumberIncreaseStep;
 
     bool operator< (const TagConfigureItem& a) const
     {
-        return queryPeriodMin < a.queryItemNumberMin;
+        return queryPeriodMin < a.queryPeriodMin;
     }
 
 } ConfigureItem;

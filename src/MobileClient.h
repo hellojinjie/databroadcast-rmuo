@@ -40,6 +40,11 @@ public:
 
     int generateItem();
 
+    list<SimpleRequest> getClients()
+    {
+        return clients;
+    }
+
 protected:
 
     list<SimpleRequest> clients;

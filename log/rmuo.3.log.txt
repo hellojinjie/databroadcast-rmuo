@@ -1,0 +1,247 @@
+client id:1 period: 38 read set: 193 66 
+client id:2 period: 36 read set: 13 168 13 
+client id:3 period: 40 read set: 12 
+client id:4 period: 19 read set: 105 87 21 
+client id:5 period: 39 read set: 26 14 2 
+client id:6 period: 25 read set: 15 
+client id:7 period: 31 read set: 122 6 125 
+client id:8 period: 33 read set: 188 139 
+client id:9 period: 27 read set: 4 3 
+client id:10 period: 39 read set: 55 51 
+一共生成客户端：10
+共生成请求个数：10
+in request:4 uniqueSet: 105 87 21 
+in request:6 uniqueSet: 15 
+in request:9 uniqueSet: 4 3 
+in request:7 uniqueSet: 122 6 125 
+in request:8 uniqueSet: 188 139 
+in request:2 uniqueSet: 13 168 
+in request:1 uniqueSet: 193 66 
+in request:5 uniqueSet: 26 14 2 
+in request:10 uniqueSet: 55 51 
+in request:3 uniqueSet: 12 
+utilization: 0.690741, maxBound: 0.717735
+
+priority: 1 period: 19 has requests: 4 6 9 7 8 2 
+priority: 2 period: 38 has requests: 1 5 10 3 
+priorityLevels:2, hyperperiod:38, minPeriod:19
+unservered set, priority: 1, data: 105,87,21,15,4,3,122,6,125,188,139,13,168,
+unservered set, priority: 2, data: 193,66,26,14,2,55,51,12,
+broadcast item:105 at clock:1
+broadcast item:87 at clock:2
+broadcast item:21 at clock:3
+request: 4 received all data.
+broadcast item:15 at clock:4
+request: 6 received all data.
+broadcast item:4 at clock:5
+broadcast item:3 at clock:6
+request: 9 received all data.
+broadcast item:122 at clock:7
+broadcast item:6 at clock:8
+broadcast item:125 at clock:9
+request: 7 received all data.
+broadcast item:188 at clock:10
+broadcast item:139 at clock:11
+request: 8 received all data.
+broadcast item:13 at clock:12
+broadcast item:168 at clock:13
+broadcast item:193 at clock:14
+broadcast item:66 at clock:15
+request: 1 received all data.
+broadcast item:26 at clock:16
+broadcast item:14 at clock:17
+broadcast item:2 at clock:18
+request: 5 received all data.
+broadcast item:55 at clock:19
+broadcast item:105 at clock:20
+broadcast item:87 at clock:21
+broadcast item:21 at clock:22
+request: 4 received all data.
+broadcast item:15 at clock:23
+request: 6 received all data.
+broadcast item:4 at clock:24
+broadcast item:3 at clock:25
+broadcast item:122 at clock:26
+broadcast item:6 at clock:27
+broadcast item:125 at clock:28
+broadcast item:188 at clock:29
+broadcast item:139 at clock:30
+broadcast item:13 at clock:31
+request: 2 received all data.
+broadcast item:168 at clock:32
+broadcast item:51 at clock:33
+request: 10 received all data.
+broadcast item:12 at clock:34
+request: 3 received all data.
+no item broadcast at clock: 35
+no item broadcast at clock: 36
+no item broadcast at clock: 37
+no item broadcast at clock: 38
+server clock end: 38
+utilization: 0.690741, maxBound: 0.717735
+
+priority: 1 period: 19 has requests: 4 6 9 7 8 2 
+priority: 2 period: 38 has requests: 1 5 10 3 
+priorityLevels:2, hyperperiod:38, minPeriod:19
+unservered set, priority: 1, data: 105,87,21,15,4,3,122,6,125,188,139,13,168,
+unservered set, priority: 2, data: 193,66,26,14,2,55,51,12,
+broadcast item:105 at clock:39
+broadcast item:87 at clock:40
+broadcast item:21 at clock:41
+request: 4 received all data.
+broadcast item:15 at clock:42
+request: 6 received all data.
+broadcast item:4 at clock:43
+broadcast item:3 at clock:44
+request: 9 received all data.
+broadcast item:122 at clock:45
+broadcast item:6 at clock:46
+broadcast item:125 at clock:47
+request: 7 received all data.
+broadcast item:188 at clock:48
+broadcast item:139 at clock:49
+request: 8 received all data.
+broadcast item:13 at clock:50
+broadcast item:168 at clock:51
+broadcast item:193 at clock:52
+broadcast item:66 at clock:53
+request: 1 received all data.
+broadcast item:26 at clock:54
+broadcast item:14 at clock:55
+broadcast item:2 at clock:56
+request: 5 received all data.
+broadcast item:55 at clock:57
+broadcast item:105 at clock:58
+broadcast item:87 at clock:59
+broadcast item:21 at clock:60
+request: 4 received all data.
+broadcast item:15 at clock:61
+request: 6 received all data.
+broadcast item:4 at clock:62
+broadcast item:3 at clock:63
+request: 9 received all data.
+broadcast item:122 at clock:64
+broadcast item:6 at clock:65
+broadcast item:125 at clock:66
+request: 7 received all data.
+broadcast item:188 at clock:67
+broadcast item:139 at clock:68
+request: 8 received all data.
+broadcast item:13 at clock:69
+request: 2 received all data.
+broadcast item:168 at clock:70
+broadcast item:51 at clock:71
+request: 10 received all data.
+broadcast item:12 at clock:72
+request: 3 received all data.
+no item broadcast at clock: 73
+no item broadcast at clock: 74
+no item broadcast at clock: 75
+no item broadcast at clock: 76
+server clock end: 76
+utilization: 0.690741, maxBound: 0.717735
+
+priority: 1 period: 19 has requests: 4 6 9 7 8 2 
+priority: 2 period: 38 has requests: 1 5 10 3 
+priorityLevels:2, hyperperiod:38, minPeriod:19
+unservered set, priority: 1, data: 105,87,21,15,4,3,122,6,125,188,139,13,168,
+unservered set, priority: 2, data: 193,66,26,14,2,55,51,12,
+broadcast item:105 at clock:77
+broadcast item:87 at clock:78
+broadcast item:21 at clock:79
+request: 4 received all data.
+broadcast item:15 at clock:80
+request: 6 received all data.
+broadcast item:4 at clock:81
+broadcast item:3 at clock:82
+broadcast item:122 at clock:83
+broadcast item:6 at clock:84
+broadcast item:125 at clock:85
+broadcast item:188 at clock:86
+broadcast item:139 at clock:87
+broadcast item:13 at clock:88
+broadcast item:168 at clock:89
+broadcast item:193 at clock:90
+broadcast item:66 at clock:91
+request: 1 received all data.
+broadcast item:26 at clock:92
+broadcast item:14 at clock:93
+broadcast item:2 at clock:94
+request: 5 received all data.
+broadcast item:55 at clock:95
+broadcast item:105 at clock:96
+broadcast item:87 at clock:97
+broadcast item:21 at clock:98
+request: 4 received all data.
+broadcast item:15 at clock:99
+request: 6 received all data.
+broadcast item:4 at clock:100
+request: 9 received all data.
+broadcast item:3 at clock:101
+broadcast item:122 at clock:102
+broadcast item:6 at clock:103
+broadcast item:125 at clock:104
+request: 7 received all data.
+broadcast item:188 at clock:105
+broadcast item:139 at clock:106
+request: 8 received all data.
+broadcast item:13 at clock:107
+request: 2 received all data.
+broadcast item:168 at clock:108
+broadcast item:51 at clock:109
+request: 10 received all data.
+broadcast item:12 at clock:110
+request: 3 received all data.
+no item broadcast at clock: 111
+no item broadcast at clock: 112
+no item broadcast at clock: 113
+no item broadcast at clock: 114
+server clock end: 114
+utilization: 0.690741, maxBound: 0.717735
+
+priority: 1 period: 19 has requests: 4 6 9 7 8 2 
+priority: 2 period: 38 has requests: 1 5 10 3 
+priorityLevels:2, hyperperiod:38, minPeriod:19
+unservered set, priority: 1, data: 105,87,21,15,4,3,122,6,125,188,139,13,168,
+unservered set, priority: 2, data: 193,66,26,14,2,55,51,12,
+broadcast item:105 at clock:115
+broadcast item:87 at clock:116
+broadcast item:21 at clock:117
+request: 4 received all data.
+broadcast item:15 at clock:118
+request: 6 received all data.
+broadcast item:4 at clock:119
+broadcast item:3 at clock:120
+request: 9 received all data.
+broadcast item:122 at clock:121
+broadcast item:6 at clock:122
+broadcast item:125 at clock:123
+broadcast item:188 at clock:124
+broadcast item:139 at clock:125
+broadcast item:13 at clock:126
+broadcast item:168 at clock:127
+broadcast item:193 at clock:128
+broadcast item:66 at clock:129
+request: 1 received all data.
+broadcast item:26 at clock:130
+broadcast item:14 at clock:131
+broadcast item:2 at clock:132
+request: 5 received all data.
+broadcast item:55 at clock:133
+broadcast item:105 at clock:134
+broadcast item:87 at clock:135
+broadcast item:21 at clock:136
+request: 4 received all data.
+broadcast item:15 at clock:137
+request: 6 received all data.
+broadcast item:4 at clock:138
+broadcast item:3 at clock:139
+request: 9 received all data.
+broadcast item:122 at clock:140
+broadcast item:6 at clock:141
+broadcast item:125 at clock:142
+request: 7 received all data.
+broadcast item:188 at clock:143
+broadcast item:139 at clock:144
+request: 8 received all data.
+在 RMUO 算法中有请求错过截止期了

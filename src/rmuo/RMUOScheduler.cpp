@@ -11,7 +11,8 @@
 
 using namespace std;
 
-RMUOScheduler::RMUOScheduler(Server *server, StatisticsData* statistics) : Scheduler(server, statistics)
+RMUOScheduler::RMUOScheduler(Server *server, StatisticsData* statistics) :
+    Scheduler(server, statistics)
 {
 }
 
@@ -99,11 +100,18 @@ bool RMUOScheduler::verifySchedulability()
 {
     double utilization = 0.0;
     list<RMUORequest>::iterator scheduleQueueIter;
-    for (scheduleQueueIter = scheduleQueue.begin();
-            scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
+    for (scheduleQueueIter = scheduleQueue.begin(); scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
     {
-        utilization = utilization +
-                (double)scheduleQueueIter->uniqueSet.size() / (double)scheduleQueueIter->period;
+        utilization = utilization + (double) scheduleQueueIter->uniqueSet.size()
+                / (double) scheduleQueueIter->period;
+    }
+
+    /* XXX 这里我想要更新的是 BandwidthUtilization
+     * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
+     */
+    if (this->statistics->bandwidthUtilization == 0)
+    {
+        this->statistics->bandwidthUtilization = utilization;
     }
 
     int m = scheduleQueue.size();
@@ -134,8 +142,8 @@ void RMUOScheduler::transformToHarmonic()
     list<RMUORequest>::iterator iter;
     for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
     {
-        double l_j = iter->period /
-                pow(2, ceil(log(iter->period / shortestPeriodRequest.period) / log(2)));
+        double l_j = iter->period / pow(2, ceil(log(iter->period / shortestPeriodRequest.period)
+                / log(2)));
         if (l_j <= shortestPeriodRequest.period / 2 || l_j > shortestPeriodRequest.period)
         {
             continue;
@@ -145,8 +153,8 @@ void RMUOScheduler::transformToHarmonic()
         list<RMUORequest>::iterator innerIter;
         for (innerIter = scheduleQueue.begin(); innerIter != scheduleQueue.end(); innerIter++)
         {
-            A_j = A_j + innerIter->period /
-                    (l_j * pow(2, floor(log(innerIter->period / shortestPeriodRequest.period) / log(2))));
+            A_j = A_j + innerIter->period / (l_j * pow(2, floor(log(innerIter->period
+                    / shortestPeriodRequest.period) / log(2))));
         }
 
         if (A_j_min == 0)
@@ -165,8 +173,8 @@ void RMUOScheduler::transformToHarmonic()
     list<RMUORequest>::iterator iter1;
     for (iter1 = scheduleQueue.begin(); iter1 != scheduleQueue.end(); iter1++)
     {
-        iter1->harmonicPeriod = l_star *
-                pow(2, floor(log(iter1->period / shortestPeriodRequest.period) / log(2)));
+        iter1->harmonicPeriod = l_star * pow(2, floor(log(iter1->period
+                / shortestPeriodRequest.period) / log(2)));
     }
 
     /* third, 对上面计算的周期进行向上取整, 这个 for 循环本应该和上面的那个写在一起 */
@@ -175,7 +183,7 @@ void RMUOScheduler::transformToHarmonic()
     double priorHarmonicPeriod = 0;
     bool needCeil = false;
     double basePeriod = scheduleQueue.front().harmonicPeriod;
-    if (basePeriod != (int)basePeriod)
+    if (basePeriod != (int) basePeriod)
     {
         basePeriod = ceil(basePeriod);
         needCeil = true;
@@ -189,7 +197,8 @@ void RMUOScheduler::transformToHarmonic()
             list<RMUORequest> l;
             pair<int, list<RMUORequest> > p(priority, l);
             harmonicQueue.insert(p);
-            cout << endl << "priority: " << priority << " period: " << iter2->harmonicPeriod << " has requests: ";
+            cout << endl << "priority: " << priority << " period: " << iter2->harmonicPeriod
+                    << " has requests: ";
         }
         if (needCeil)
         {
@@ -213,10 +222,11 @@ void RMUOScheduler::broadcast()
     for (iter = harmonicQueue.begin(); iter != harmonicQueue.end(); iter++)
     {
         list<int> unservered;
-        for(list<RMUORequest>::iterator innerIter = iter->second.begin();
-                innerIter != iter->second.end(); innerIter++)
+        for (list<RMUORequest>::iterator innerIter = iter->second.begin(); innerIter
+                != iter->second.end(); innerIter++)
         {
-            unservered.insert(unservered.end(), innerIter->uniqueSet.begin(), innerIter->uniqueSet.end());
+            unservered.insert(unservered.end(), innerIter->uniqueSet.begin(),
+                    innerIter->uniqueSet.end());
         }
         pair<int, list<int> > data(iter->first, unservered);
         unserveredSet.insert(data);
@@ -225,10 +235,12 @@ void RMUOScheduler::broadcast()
     /* for debug */
     cout << "priorityLevels:" << priorityLevels << ", hyperperiod:" << hyperperiod
             << ", minPeriod:" << minPeriod << endl;
-    for (map<int, list<int> >::const_iterator iter = unserveredSet.begin(); iter != unserveredSet.end(); iter++)
+    for (map<int, list<int> >::const_iterator iter = unserveredSet.begin(); iter
+            != unserveredSet.end(); iter++)
     {
         cout << "unservered set, priority: " << iter->first << ", data: ";
-        for (list<int>::const_iterator innerIter = iter->second.begin(); innerIter != iter->second.end(); innerIter++)
+        for (list<int>::const_iterator innerIter = iter->second.begin(); innerIter
+                != iter->second.end(); innerIter++)
         {
             cout << *innerIter << ",";
         }
@@ -315,7 +327,7 @@ void RMUOScheduler::checkDeadline(int dataItem)
 
         /* 检查是否有错过截止期的
          * 每个算法的检查方法都是不一样的，不可以照搬 */
-        if (server->getClock() + (int)iter->readSet.size() - (int)iter->receivedSet.size()
+        if (server->getClock() + (int) iter->readSet.size() - (int) iter->receivedSet.size()
                 > iter->arrivalTime + iter->period)
         {
             /* 不应该会运行到这里的  */
