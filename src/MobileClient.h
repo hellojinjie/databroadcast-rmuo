@@ -40,10 +40,24 @@ public:
 
     int generateItem();
 
-    list<SimpleRequest> getClients()
+    list<SimpleRequest> getClients() const
     {
         return clients;
     }
+
+    void addClients(list<SimpleRequest> &clients)
+    {
+        this->clients.insert(this->clients.end(), clients.begin(), clients.end());
+        this->clientCount += clients.size();
+    }
+
+    void addClient(SimpleRequest request)
+    {
+        this->clients.push_back(request);
+        this->clientCount++;
+    }
+
+    list<SimpleRequest> generateClients(int clientCount, ConfigureItem configure);
 
 protected:
 
@@ -51,7 +65,6 @@ protected:
 
 private:
 
-    void generateClients();
     int generateId();
 
     ConfigureItem configure;

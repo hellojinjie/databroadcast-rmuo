@@ -159,7 +159,12 @@ void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureI
 
         Server server;
         Scheduler scheduler(&server, &statistics);
-        Client client(&server, clientNumber, configureItems.front());
+        Client client(&server, clientNumberMin, configureItems.front());
+
+        ConfigureItem configure = configureItems.front();
+        configure.queryPeriodMin = configure.queryPeriodMax;
+        list<SimpleRequest> clients = client.generateClients(clientNumber - clientNumberMin, configure);
+        client.addClients(clients);
 
         server.setClient(&client);
         server.setScheduler(&scheduler);

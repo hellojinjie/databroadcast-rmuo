@@ -21,7 +21,7 @@ MobileClient::MobileClient(Server *server, int count, ConfigureItem configure)
     this->setServer(server);
     this->clientCount = count;
     this->configure = configure;
-    this->generateClients();
+    this->clients = this->generateClients(this->clientCount, this->configure);
 }
 
 MobileClient::~MobileClient()
@@ -29,9 +29,10 @@ MobileClient::~MobileClient()
 
 }
 
-void MobileClient::generateClients()
+list<SimpleRequest> MobileClient::generateClients(int clientCount, ConfigureItem configure)
 {
-    for (int i = 0; i < this->clientCount; i++)
+    list<SimpleRequest> clients;
+    for (int i = 0; i < clientCount; i++)
     {
         SimpleRequest client;
         client.id = this->generateId();
@@ -58,9 +59,10 @@ void MobileClient::generateClients()
             cout << *iter << " ";
         }
         cout << endl;
-        this->clients.push_back(client);
+        clients.push_back(client);
     }
     cout << "一共生成客户端：" << clients.size() << endl;
+    return clients;
 }
 
 int MobileClient::generateRequests(list<SimpleRequest> &requests)
