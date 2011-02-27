@@ -6,7 +6,7 @@
         /* 数据库大小 */
         "dbsize" : 4000,
         /* 总的时槽数 */
-        "totalSlot" : 1000,
+        "totalSlot" : 10000,
         /* 客户端数量 */
         "clientNumber" : 10,
         /* 每次请求访问的数据项的个数的最小值 */
@@ -20,7 +20,7 @@
         /* zipf 分布函数的参数 */
         "theta" : 0.8,
         /* 随机数种子 , 0 表示用当前时间 */
-        "seed" : 0
+        "seed" : 1298783686
     },
     
     "requestDeadlineMissRatio" : {

@@ -154,6 +154,7 @@ void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureI
     for (int clientNumber = clientNumberMin; clientNumber <= clientNumberMax; clientNumber += clientNumberIncreaseStep)
     {
         srand(seed);
+        configureItems.front().seed = seed;
         StatisticsData statistics;
 
         Server server;
@@ -176,12 +177,13 @@ void printUtilizationAndDeadlineMissRatio(fstream &resultStream, string title, l
     int clientNumberIncreaseStep = configureItems.front().clientNumberIncreaseStep;
     int i = 0;
     resultStream << title << endl;
-    resultStream << "client\tratio\tutilaztion" << endl;
+    resultStream << "seed\t\tclient\t\tratio\t\tutilaztion" << endl;
     for (list<pair<ConfigureItem, StatisticsData> >::iterator iter = collected.begin();
            iter != collected.end(); iter++)
     {
-        resultStream << (clientNumberMin + clientNumberIncreaseStep * i++) << "\t"
-               << iter->second.getDeadlineMissRatio() << "\t"
+        resultStream << iter->first.seed << "\t\t"
+               << (clientNumberMin + clientNumberIncreaseStep * i++) << "\t\t"
+               << iter->second.getDeadlineMissRatio() << "\t\t"
                << iter->second.bandwidthUtilization << endl;
     }
 }

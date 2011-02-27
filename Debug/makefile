@@ -48,7 +48,7 @@ all: databroadcast.exe
 databroadcast.exe: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MinGW C++ Linker'
-	g++ -L"D:\opt\cpp_lib\libjson_6.2.3\libjson" -o"databroadcast.exe" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++  -o"databroadcast.exe" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
