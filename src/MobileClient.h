@@ -12,6 +12,7 @@
 #include "SimpleRequest.h"
 #include "Configure.h"
 #include <list>
+#include <iostream>
 
 /* 名称空间不可忘了啊 */
 using namespace std;
@@ -45,15 +46,24 @@ public:
         return clients;
     }
 
-    void addClients(list<SimpleRequest> &clients)
+    void addClients(list<SimpleRequest> clients)
     {
-        this->clients.insert(this->clients.end(), clients.begin(), clients.end());
-        this->clientCount += clients.size();
+        for (list<SimpleRequest>::const_iterator iter = clients.begin(); iter != clients.end(); iter++)
+        {
+            this->addClient(*iter);
+        }
     }
 
-    void addClient(SimpleRequest request)
+    void addClient(SimpleRequest client)
     {
-        this->clients.push_back(request);
+        client.id = this->generateId();
+        cout << "client id:" << client.id << " period: " << client.period << " read set: ";
+        for (list<int>::iterator iter = client.readSet.begin(); iter != client.readSet.end(); iter++)
+        {
+            cout << *iter << " ";
+        }
+        cout << endl;
+        this->clients.push_back(client);
         this->clientCount++;
     }
 

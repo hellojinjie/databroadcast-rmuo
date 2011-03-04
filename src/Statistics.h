@@ -17,12 +17,14 @@ typedef struct TagStatisticsData
     int missDeadlineRequest;
 
     double bandwidthUtilization;
+    double maxBound; /* rmuo 中的利用率的边界 */
 
     TagStatisticsData()
     {
         totalRequest = 0;
         missDeadlineRequest = 0;
         bandwidthUtilization = 0;
+        maxBound = 0;
     }
 
     double getDeadlineMissRatio()

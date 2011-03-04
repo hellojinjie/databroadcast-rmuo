@@ -20,8 +20,15 @@ typedef struct TagSINDataItem
     /** absolute deadline,所有请求该数据项的最小的那个 deadline */
     int deadline;
 
+    TagSINDataItem()
+    {
+        item = 0;
+        requestCount = 0;
+        deadline = 0;
+    }
+
     /** 这个方法是必须的，不可以忘记了 */
-    bool operator ==(TagSINDataItem a)
+    bool operator==(TagSINDataItem a)
     {
         return item == a.item;
     }

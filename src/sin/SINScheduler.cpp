@@ -174,36 +174,36 @@ bool SINScheduler::doSchedule()
         cout << "当前时刻没有数据项要发送，serverClock:" << time << endl;
         return true;
     }
-    list<SINDataItem>::iterator minimumSINItem = requestItems.begin();
-    double minimumSINValue = (double) (minimumSINItem->deadline - server->getClock()) /
-            (double) minimumSINItem->requestCount;
+    SINDataItem minimumSINItem = requestItems.front();
+    double minimumSINValue = (double) (minimumSINItem.deadline - server->getClock()) /
+            (double) minimumSINItem.requestCount;
     list<SINDataItem>::iterator iter;
-    for (iter = minimumSINItem++; iter != requestItems.end(); iter++)
+    for (iter = requestItems.begin(); iter != requestItems.end(); iter++)
     {
         double sin = (double) (iter->deadline - server->getClock()) /
                 (double) iter->requestCount;
         if (sin < minimumSINValue)
         {
             minimumSINValue = sin;
-            minimumSINItem = iter;
+            minimumSINItem = *iter;
         }
         else if (sin == minimumSINValue)
         {
-            if (iter->deadline < minimumSINItem->deadline)
+            if (iter->deadline < minimumSINItem.deadline)
             {
-                minimumSINItem = iter;
+                minimumSINItem = *iter;
             }
-            else if (iter->item < minimumSINItem->item)
+            else if (iter->item < minimumSINItem.item)
             {
                 /* 当 sin 值和 Deadline 都一样的时候就选取 data item值小的那个 */
-                minimumSINItem = iter;
+                minimumSINItem = *iter;
             }
         }
     }
-    requestItems.remove(*minimumSINItem);
+    requestItems.remove(minimumSINItem);
     /* 当前时间增一，表示这个 sin 值最小的数据项已经广播完成 */
     int clock = server->incrementAndGetClock();
-    cout << "broadcast item:" << minimumSINItem->item << " at clock:" << clock << endl;
+    cout << "broadcast item:" << minimumSINItem.item << " at clock:" << clock << endl;
 
     /* fourth, 调整 scheduleQueue, 看看有没有 request 因为上面的data item 的广播而完成了 */
     list<SimpleRequest> needToRemove;
@@ -211,10 +211,10 @@ bool SINScheduler::doSchedule()
     for (scheduleQueueIter = scheduleQueue.begin();
             scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
     {
-        if (this->isInReadSet(*scheduleQueueIter, minimumSINItem->item))
+        if (this->isInReadSet(*scheduleQueueIter, minimumSINItem.item))
         {
             /* 哈哈，这个想法都想的出来。 */
-            scheduleQueueIter->receivedItem.push_back(minimumSINItem->item);
+            scheduleQueueIter->receivedItem.push_back(minimumSINItem.item);
             scheduleQueueIter->receivedItem.unique();
             if (scheduleQueueIter->receivedItem.size() == scheduleQueueIter->readSet.size())
             {

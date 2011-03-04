@@ -21,7 +21,7 @@ MobileClient::MobileClient(Server *server, int count, ConfigureItem configure)
     this->setServer(server);
     this->clientCount = count;
     this->configure = configure;
-    this->clients = this->generateClients(this->clientCount, this->configure);
+    this->addClients(this->generateClients(this->clientCount, this->configure));
 }
 
 MobileClient::~MobileClient()
@@ -35,7 +35,7 @@ list<SimpleRequest> MobileClient::generateClients(int clientCount, ConfigureItem
     for (int i = 0; i < clientCount; i++)
     {
         SimpleRequest client;
-        client.id = this->generateId();
+        // client.id = this->generateId();
 
         /* 初始化为 -1 表示该客户端还没有请求过 */
         client.lastRequestTime = -1;
@@ -53,15 +53,8 @@ list<SimpleRequest> MobileClient::generateClients(int clientCount, ConfigureItem
             client.readSet.unique();
             j = client.readSet.size();
         }
-        cout << "client id:" << client.id << " period: " << client.period << " read set: ";
-        for (list<int>::iterator iter = client.readSet.begin(); iter != client.readSet.end(); iter++)
-        {
-            cout << *iter << " ";
-        }
-        cout << endl;
         clients.push_back(client);
     }
-    cout << "一共生成客户端：" << clients.size() << endl;
     return clients;
 }
 

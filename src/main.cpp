@@ -10,6 +10,7 @@
 #include <fstream>
 #include <ctime>
 #include <cstdlib>
+#include <assert.h>
 #include "Server.h"
 #include "Scheduler.h"
 #include "MobileClient.h"
@@ -161,10 +162,20 @@ void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureI
         Scheduler scheduler(&server, &statistics);
         Client client(&server, clientNumberMin, configureItems.front());
 
-        ConfigureItem configure = configureItems.front();
-        configure.queryPeriodMin = configure.queryPeriodMax;
-        list<SimpleRequest> clients = client.generateClients(clientNumber - clientNumberMin, configure);
-        client.addClients(clients);
+        list<SimpleRequest> clients = client.getClients();
+        assert((int)clients.size() > clientNumberIncreaseStep);
+        clients.sort();
+        list<SimpleRequest> clientsToAdd;
+        int i = 0;
+        list<SimpleRequest>::const_reverse_iterator iter = clients.rbegin();
+        for ( ; i < clientNumberIncreaseStep; i++, iter++)
+        {
+            clientsToAdd.push_back(*iter);
+        }
+        for (int i = 0; i < (clientNumber - clientNumberMin) / clientNumberIncreaseStep; i++)
+        {
+            client.addClients(clientsToAdd);
+        }
 
         server.setClient(&client);
         server.setScheduler(&scheduler);
@@ -182,14 +193,15 @@ void printUtilizationAndDeadlineMissRatio(fstream &resultStream, string title, l
     int clientNumberIncreaseStep = configureItems.front().clientNumberIncreaseStep;
     int i = 0;
     resultStream << title << endl;
-    resultStream << "seed\t\tclient\t\tratio\t\tutilaztion" << endl;
+    resultStream << "seed\t\tclient\t\tratio\t\tutilaztion\t\tmaxBound" << endl;
     for (list<pair<ConfigureItem, StatisticsData> >::iterator iter = collected.begin();
            iter != collected.end(); iter++)
     {
         resultStream << iter->first.seed << "\t\t"
                << (clientNumberMin + clientNumberIncreaseStep * i++) << "\t\t"
                << iter->second.getDeadlineMissRatio() << "\t\t"
-               << iter->second.bandwidthUtilization << endl;
+               << iter->second.bandwidthUtilization << "\t\t"
+               << iter->second.maxBound << endl;
     }
 }
 

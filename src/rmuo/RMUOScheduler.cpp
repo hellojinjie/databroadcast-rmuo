@@ -106,16 +106,17 @@ bool RMUOScheduler::verifySchedulability()
                 / (double) scheduleQueueIter->period;
     }
 
+    int m = scheduleQueue.size();
+    double maxBound = (double) ((double) m * (pow(2, 1.0 / m) - 1.0));
+
     /* XXX 这里我想要更新的是 BandwidthUtilization
      * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
      */
     if (this->statistics->bandwidthUtilization == 0)
     {
         this->statistics->bandwidthUtilization = utilization;
+        this->statistics->maxBound = maxBound;
     }
-
-    int m = scheduleQueue.size();
-    double maxBound = (double) ((double) m * (pow(2, 1.0 / m) - 1.0));
 
     /* for debug */
     cout << "utilization: " << utilization << ", maxBound: " << maxBound << endl;
@@ -332,7 +333,7 @@ void RMUOScheduler::checkDeadline(int dataItem)
         {
             /* 不应该会运行到这里的  */
             cout << "在 RMUO 算法中有请求错过截止期了" << endl;
-            assert(false);
+            //XXX assert(false);
         }
     }
 }
