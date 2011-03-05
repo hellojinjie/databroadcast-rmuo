@@ -12,7 +12,7 @@
 using namespace std;
 
 RMUOScheduler::RMUOScheduler(Server *server, StatisticsData* statistics) :
-    Scheduler(server, statistics)
+     Scheduler(server, statistics), needVerifySchedulability(true)
 {
 }
 
@@ -50,8 +50,12 @@ void RMUOScheduler::preprocess()
 {
     if (pendingQueue.size() == 0)
     {
+        needVerifySchedulability = false;
         return;
     }
+
+    /* 有新的请求加入就要重新验证是否可调度 */
+    needVerifySchedulability = true;
 
     /* first, 将 pendingQueue 里的请求加入 scheduleQueue */
     list<SimpleRequest>::iterator simpleIter;
@@ -98,6 +102,11 @@ void RMUOScheduler::preprocess()
 
 bool RMUOScheduler::verifySchedulability()
 {
+    if (needVerifySchedulability == false)
+    {
+        return;
+    }
+
     double utilization = 0.0;
     list<RMUORequest>::iterator scheduleQueueIter;
     for (scheduleQueueIter = scheduleQueue.begin(); scheduleQueueIter != scheduleQueue.end(); scheduleQueueIter++)
@@ -109,14 +118,8 @@ bool RMUOScheduler::verifySchedulability()
     int m = scheduleQueue.size();
     double maxBound = (double) ((double) m * (pow(2, 1.0 / m) - 1.0));
 
-    /* XXX 这里我想要更新的是 BandwidthUtilization
-     * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
-     */
-    if (this->statistics->bandwidthUtilization == 0)
-    {
-        this->statistics->bandwidthUtilization = utilization;
-        this->statistics->maxBound = maxBound;
-    }
+    this->statistics->bandwidthUtilization = utilization;
+    this->statistics->maxBound = maxBound;
 
     /* for debug */
     cout << "utilization: " << utilization << ", maxBound: " << maxBound << endl;
@@ -133,6 +136,12 @@ bool RMUOScheduler::verifySchedulability()
 
 void RMUOScheduler::transformToHarmonic()
 {
+
+    if (needVerifySchedulability == false)
+    {
+        return;
+    }
+
     /* zero, 先清空 harmonicQueue，这个不能忘了，不然这个队列的数据就越来越多了 */
     harmonicQueue.clear();
 
@@ -143,8 +152,8 @@ void RMUOScheduler::transformToHarmonic()
     list<RMUORequest>::iterator iter;
     for (iter = scheduleQueue.begin(); iter != scheduleQueue.end(); iter++)
     {
-        double l_j = iter->period / pow(2, ceil(log(iter->period / shortestPeriodRequest.period)
-                / log(2)));
+        double l_j = iter->period / pow(2, ceil(
+                log(iter->period / shortestPeriodRequest.period) / log(2)));
         if (l_j <= shortestPeriodRequest.period / 2 || l_j > shortestPeriodRequest.period)
         {
             continue;
@@ -333,7 +342,7 @@ void RMUOScheduler::checkDeadline(int dataItem)
         {
             /* 不应该会运行到这里的  */
             cout << "在 RMUO 算法中有请求错过截止期了" << endl;
-            //XXX assert(false);
+            assert(false);
         }
     }
 }

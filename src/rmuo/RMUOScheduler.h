@@ -31,6 +31,10 @@ private:
      * key 是从 1 开始的 */
     map<int, list<RMUORequest> > harmonicQueue;
 
+    /** 如果有新的请求加入，就需要检查可调度性 */
+    bool needVerifySchedulability;
+
+private:
     /** 将 pendingQueue 中的 SimpleRequest 转化成 RMUORequest 加入 scheduleQueue */
     void preprocess();
 
