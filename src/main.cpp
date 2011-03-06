@@ -246,14 +246,14 @@ void utilizationAndDeadlineMissRatio()
     cout << "utilizationAndDeadlineMissRatio start..." << endl;
     cout << "seed: " << seed << endl;
 
+    /* rmuo 算法 */
+    runBandwidthUtilizationAndDeadlineMissRatio<Server, RMUOScheduler, RMUOClient>(seed, rmuoCollected);
+
     /* sin 算法 */
     runBandwidthUtilizationAndDeadlineMissRatio<Server, SINScheduler, MobileClient>(seed, sinCollected);
 
     /* dtiu 算法 */
     runBandwidthUtilizationAndDeadlineMissRatio<Server, DTIUScheduler, MobileClient>(seed, dtiuCollected);
-
-    /* rmuo 算法 */
-    runBandwidthUtilizationAndDeadlineMissRatio<Server, RMUOScheduler, RMUOClient>(seed, rmuoCollected);
 
     /* 打印结果 */
     fstream result(configureItems.front().resultOutputFilename.c_str(), fstream::out);
