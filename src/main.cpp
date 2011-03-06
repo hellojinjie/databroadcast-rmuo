@@ -143,6 +143,22 @@ void requestDeadlineMissRatio()
     result.close();
 }
 
+bool readSetSizeComparsion(SimpleRequest r1, SimpleRequest r2)
+{
+    if (r1.readSet.size() < r2.readSet.size())
+    {
+        return true;
+    }
+    else
+    {
+        if (r1.readSet.size() == r2.readSet.size() && r1.period < r2.period)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 template<class Server, class Scheduler, class Client>
 void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureItem, StatisticsData> > &collected)
 {
@@ -164,7 +180,7 @@ void runBandwidthUtilizationAndDeadlineMissRatio(long seed, list<pair<ConfigureI
 
         list<SimpleRequest> clients = client.getClients();
         assert((int)clients.size() > clientNumberIncreaseStep);
-        clients.sort();
+        clients.sort(readSetSizeComparsion);
         list<SimpleRequest> clientsToAdd;
         int i = 0;
         list<SimpleRequest>::const_reverse_iterator iter = clients.rbegin();

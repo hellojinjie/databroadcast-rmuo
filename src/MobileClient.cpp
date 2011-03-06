@@ -48,11 +48,15 @@ list<SimpleRequest> MobileClient::generateClients(int clientCount, ConfigureItem
         int j = client.readSet.size();
         while (j < readSetCount)
         {
-            client.readSet.push_back(this->generateItem());
+            int item = this->generateItem();cout << item << "  ";
             /* 请求的数据项不能重复 */
-            client.readSet.unique();
+            if (isInList(client.readSet, item))
+            {
+                continue;
+            }
+            client.readSet.push_back(item);
             j = client.readSet.size();
-        }
+        } cout << endl;
         clients.push_back(client);
     }
     return clients;

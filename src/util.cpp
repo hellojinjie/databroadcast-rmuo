@@ -6,7 +6,10 @@
 
 #include "util.h"
 #include <cstdlib>
+#include <list>
 #include <cmath>
+
+using namespace std;
 
 /* Allocate a `zipf_t' and precompute values into it. */
 void zipf_init(int N, double a, zipf_t *z)
@@ -54,4 +57,18 @@ int uniform(int min, int max)
     int r = rand() % (max - min + 1);
 
     return min + r ;
+}
+
+
+bool isInList(list<int> l, int t)
+{
+    list<int>::iterator iter;
+    for (iter = l.begin(); iter != l.end(); iter++)
+    {
+        if (*iter == t)
+        {
+            return true;
+        }
+    }
+    return false;
 }

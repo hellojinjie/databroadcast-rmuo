@@ -105,6 +105,7 @@ void DTIUScheduler::preprocess()
 
     /* XXX 这里我想要更新的是 BandwidthUtilization
      * 但是这个方法很笨，一定要注意其他地方的修改会不会对这个造成影响
+     * 在整个算法中整个过程应该只算一遍
      */
     if (this->statistics->bandwidthUtilization == 0)
     {

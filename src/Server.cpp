@@ -36,7 +36,7 @@ void Server::startSimulation()
 
         cout << "server clock end: " << this->getClock() << endl;
 
-        /* XXX 这里要注意 */
+        /* XXX 这里要注意 ，这里偷懒了，不应该这么做*/
         if (this->getClock() >=
                 Configure::getInstance("requestDeadlineMissRatio").front().totalSlot)
         {

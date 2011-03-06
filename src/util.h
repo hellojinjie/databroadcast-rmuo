@@ -1,6 +1,10 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
+#include <list>
+
+using namespace std;
+
 typedef struct
 {
     /* Value range is all integers numbers from 1 to N, bounds included. */
@@ -21,5 +25,7 @@ int zipf(zipf_t z);
  * 均匀分布虽简单，但是写出一正确的均匀分布却并不简单
  */
 int uniform(int min, int max);
+
+bool isInList(list<int> l, int t);
 
 #endif // UTIL_H_

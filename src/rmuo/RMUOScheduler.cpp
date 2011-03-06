@@ -104,7 +104,7 @@ bool RMUOScheduler::verifySchedulability()
 {
     if (needVerifySchedulability == false)
     {
-        return;
+        return true;
     }
 
     double utilization = 0.0;
@@ -154,7 +154,7 @@ void RMUOScheduler::transformToHarmonic()
     {
         double l_j = iter->period / pow(2, ceil(
                 log(iter->period / shortestPeriodRequest.period) / log(2)));
-        if (l_j <= shortestPeriodRequest.period / 2 || l_j > shortestPeriodRequest.period)
+        if (l_j <= shortestPeriodRequest.period / 2.0 || l_j > shortestPeriodRequest.period)
         {
             continue;
         }
@@ -254,6 +254,7 @@ void RMUOScheduler::broadcast()
         {
             cout << *innerIter << ",";
         }
+        cout << " total size:" << iter->second.size();
         cout << endl;
     }
 
