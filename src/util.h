@@ -2,6 +2,7 @@
 #define UTIL_H_
 
 #include <list>
+#include "SimpleRequest.h"
 
 using namespace std;
 
@@ -27,5 +28,7 @@ int zipf(zipf_t z);
 int uniform(int min, int max);
 
 bool isInList(list<int> l, int t);
+
+bool readSetSizeComparsion(SimpleRequest r1, SimpleRequest r2);
 
 #endif // UTIL_H_

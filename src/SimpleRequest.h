@@ -41,7 +41,6 @@ typedef struct TagSimpleRequest
     /** 已经收到的数据项 */
     list<int> receivedItem;
 
-    /** TODO 这个做法不好，但是似乎也想不到其他的补救方法 */
     bool operator==(TagSimpleRequest a)
     {
         return a.id == id;

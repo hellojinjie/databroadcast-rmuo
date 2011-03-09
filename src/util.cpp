@@ -72,3 +72,19 @@ bool isInList(list<int> l, int t)
     }
     return false;
 }
+
+bool readSetSizeComparsion(SimpleRequest r1, SimpleRequest r2)
+{
+    if (r1.readSet.size() < r2.readSet.size())
+    {
+        return true;
+    }
+    else
+    {
+        if (r1.readSet.size() == r2.readSet.size() && r1.period < r2.period)
+        {
+            return true;
+        }
+    }
+    return false;
+}
