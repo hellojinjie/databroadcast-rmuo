@@ -76,8 +76,8 @@ bool SINScheduler::doSchedule()
                     }
                     cout << "该请求错过截止期, id:" << scheduleIter->id << endl;
                     /* 记录错过截止期的请求个数 */
-                    statistics->missDeadlineRequest++;
                     scheduleIter = scheduleQueue.erase(scheduleIter);
+                    statistics->missDeadlineRequest[*scheduleIter]++;
                     cout << "after erase scheduleQueue size:" << scheduleQueue.size() << endl;
                 }
                 else
@@ -107,7 +107,10 @@ bool SINScheduler::doSchedule()
     /* second, 处理 pendingQueue 里的请求,将请求加入到 scheduleQueue */
     cout << "pendingQueue has requests: " << pendingQueue.size() << endl;
     /* 记录总的请求个数 */
-    statistics->totalRequest += pendingQueue.size();
+    for (list<SimpleRequest>::const_iterator iter = pendingQueue.begin(); iter != pendingQueue.end(); iter++)
+    {
+        statistics->totalRequest[*iter]++;
+    }
     for (list<SimpleRequest>::iterator requestIter = pendingQueue.begin(); requestIter
             != pendingQueue.end(); requestIter++)
     {
@@ -115,7 +118,7 @@ bool SINScheduler::doSchedule()
         if (requestIter->arrivalTime + requestIter->period < (int)this->server->getClock())
         {
             /* 这里要记录错过截止期的请求 */
-            statistics->missDeadlineRequest++;
+            statistics->missDeadlineRequest[*requestIter]++;
             continue;
         }
         /* 将新加入的请求中的ReadSet 中的data item 加入到 requestItems */
@@ -213,14 +216,25 @@ bool SINScheduler::doSchedule()
     {
         if (this->isInReadSet(*scheduleQueueIter, minimumSINItem.item))
         {
-            /* 哈哈，这个想法都想的出来。 */
-            scheduleQueueIter->receivedItem.push_back(minimumSINItem.item);
-            scheduleQueueIter->receivedItem.unique();
-            if (scheduleQueueIter->receivedItem.size() == scheduleQueueIter->readSet.size())
+            bool alreadReceived = false;
+            for (list<int>::iterator innerIter = scheduleQueueIter->receivedItem.begin();
+                    innerIter != scheduleQueueIter->receivedItem.end(); innerIter++)
             {
-                /* 当前请求已经全部收到数据项, 删除该请求 */
-                needToRemove.push_back(*scheduleQueueIter);
-                cout << "该请求已经全部收到请求的数据,id：" << scheduleQueueIter->id << endl;
+                if (*innerIter == minimumSINItem.item)
+                {
+                    alreadReceived = true;
+                    break;
+                }
+            }
+            if (alreadReceived == false)
+            {
+                scheduleQueueIter->receivedItem.push_back(minimumSINItem.item);
+                if (scheduleQueueIter->receivedItem.size() == scheduleQueueIter->readSet.size())
+                {
+                    /* 当前请求已经全部收到数据项, 删除该请求 */
+                    needToRemove.push_back(*scheduleQueueIter);
+                    cout << "该请求已经全部收到请求的数据,id：" << scheduleQueueIter->id << endl;
+                }
             }
         }
     }

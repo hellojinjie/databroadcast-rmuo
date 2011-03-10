@@ -8,37 +8,51 @@
 #define STATISTICS_H_
 
 #include <string>
+#include <map>
+#include "SimpleRequest.h"
 
 using namespace std;
 
 typedef struct TagStatisticsData
 {
-    int totalRequest;
-    int missDeadlineRequest;
+    map<SimpleRequest, int> totalRequest;
+    map<SimpleRequest, int> missDeadlineRequest;
 
     double bandwidthUtilization;
     double maxBound; /* rmuo 中的利用率的边界 */
 
     TagStatisticsData()
     {
-        totalRequest = 0;
-        missDeadlineRequest = 0;
         bandwidthUtilization = 0;
         maxBound = 0;
     }
 
     double getDeadlineMissRatio()
     {
-        if (totalRequest == 0)
+        if (totalRequest.size() == 0)
         {
             return 1;
         }
-        return (double) missDeadlineRequest / (double) totalRequest;
+
+        int total = 0;
+        int miss = 0;
+        for (map<SimpleRequest, int>::const_iterator iter = totalRequest.begin();
+                iter != totalRequest.end(); iter++)
+        {
+            total += iter->second;
+        }
+        for (map<SimpleRequest, int>::const_iterator iter = missDeadlineRequest.begin();
+                iter != missDeadlineRequest.end(); iter++)
+        {
+            miss += iter->second;
+        }
+
+        return (double) miss / (double) total;
     }
 
     bool operator< (const TagStatisticsData& d) const
     {
-        return (double) missDeadlineRequest / (double) totalRequest < (double) d.missDeadlineRequest / (double) d.totalRequest;
+        return (double) this->getDeadlineMissRatio() < d.getDeadlineMissRatio();
     }
 } StatisticsData;
 

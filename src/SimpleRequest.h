@@ -48,7 +48,7 @@ typedef struct TagSimpleRequest
 
     bool operator<(TagSimpleRequest a)
     {
-        return period < a.period;
+        return id < a.id;
     }
 
 } SimpleRequest;

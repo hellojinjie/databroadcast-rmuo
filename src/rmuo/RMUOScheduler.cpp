@@ -273,7 +273,7 @@ void RMUOScheduler::broadcast()
             {
                 iter->arrivalTime = this->server->getClock();
                 iter->receivedSet.clear();
-                statistics->totalRequest++;
+                statistics->totalRequest[*iter]++;
             }
         }
 
@@ -327,12 +327,24 @@ void RMUOScheduler::checkDeadline(int dataItem)
         if (isInList(iter->readSet, dataItem))
         {
             /* 下面这行的前提是什么？
-             * 每个周期结束后，receivedSet 都要正确的清空 */
-            iter->receivedSet.push_back(dataItem);
-            iter->receivedSet.unique();
-            if (iter->receivedSet.size() == iter->readSet.size())
+             * 每个周期结束后，receivedSet 都要正确的清空,在 broadcast 函数清空  */
+            bool alreadyReceived = false;
+            for (list<int>::iterator innerIter = iter->receivedSet.begin();
+                    innerIter != iter->receivedSet.end(); innerIter++)
             {
-                cout << "request: " << iter->id << " received all data." << endl;
+                if (*innerIter == dataItem)
+                {
+                    alreadyReceived = true;
+                    break;
+                }
+            }
+            if (alreadyReceived == false)
+            {
+                iter->receivedSet.push_back(dataItem);
+                if (iter->receivedSet.size() == iter->readSet.size())
+                {
+                    cout << "request: " << iter->id << " received all data." << endl;
+                }
             }
         }
 

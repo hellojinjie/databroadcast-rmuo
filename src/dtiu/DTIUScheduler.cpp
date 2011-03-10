@@ -21,12 +21,14 @@ DTIUScheduler::~DTIUScheduler()
 
 bool DTIUScheduler::doSchedule()
 {
-    statistics->totalRequest += pendingQueue.size();
+    for (list<SimpleRequest>::const_iterator iter = pendingQueue.begin();
+            iter != pendingQueue.end(); iter++)
+    {
+        statistics->totalRequest[*iter]++;
+    }
 
     /* first, 检查有没有错过截止期的 */
     int count = checkDeadline();
-
-    statistics->missDeadlineRequest += count;
 
     /* second, 对 pendingQueue 进行预处理 */
     preprocess();
@@ -59,6 +61,7 @@ int DTIUScheduler::checkDeadline()
         {
             cout << "该请求错过截止期：" << iter->id << endl;
             iter = scheduleQueue.erase(iter);
+            statistics->missDeadlineRequest[*iter]++;
             deadlineMissCount++;
         }
         else
@@ -83,6 +86,7 @@ int DTIUScheduler::checkDeadline(list<SimpleRequest> &pendingQueue)
         {
             cout << "该请求错过截止期(pendingQueue)：" << iter->id << endl;
             iter = pendingQueue.erase(iter);
+            statistics->missDeadlineRequest[*iter]++;
             deadlineMissCount++;
         }
         else
